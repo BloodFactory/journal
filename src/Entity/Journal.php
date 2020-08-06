@@ -74,7 +74,7 @@ class Journal
     private ?int $sickCOVID = 0;
 
     /**
-     * @ORM\Column(type="string", length=4000)
+     * @ORM\Column(type="string", length=4000, nullable=true)
      */
     private ?string $note = '';
 
@@ -220,7 +220,7 @@ class Journal
         return $this->note;
     }
 
-    public function setNote(string $note): self
+    public function setNote(?string $note): self
     {
         $this->note = $note;
 

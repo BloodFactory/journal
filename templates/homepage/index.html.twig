@@ -3,5 +3,11 @@
 {% block title %}Hello HomepageController!{% endblock %}
 
 {% block body %}
-    <a href="{{ path('add_daily_report') }}" class="uk-button">Добавить</a>
+    <div class="uk-section uk-section-muted uk-section-small" uk-height-viewport>
+        <div class="uk-container uk-container-large">
+            <div class="uk-card uk-card-default uk-card-body uk-card-small" uk-height-viewport="offset-top: true; offset-bottom: 40px">
+                <a href="{{ path('add_daily_report') }}" class="uk-button uk-button-primary">Добавить</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

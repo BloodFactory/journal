@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AddDailyReportController!{% endblock %}
+
+{% form_theme form 'forms/daily_report_form.html.twig' %}
+
+{% block body %}
+    <div class="uk-container">
+        {{ form(form) }}
+    </div>
+{% endblock %}

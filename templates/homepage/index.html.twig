@@ -2,12 +2,139 @@
 
 {% block title %}Hello HomepageController!{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        th, td {
+            border: 1px solid #e5e5e5;
+        }
+
+        th {
+            font-size: 10px !important;
+            vertical-align: middle !important;
+            text-align: center !important;
+        }
+
+        .branch {
+            background-color: honeydew;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <div class="uk-section uk-section-muted uk-section-small" uk-height-viewport>
         <div class="uk-container uk-container-large">
-            <div class="uk-card uk-card-default uk-card-body uk-card-small" uk-height-viewport="offset-top: true; offset-bottom: 40px">
+            <div class="uk-card uk-card-default uk-card-body uk-card-small"
+                 uk-height-viewport="offset-top: true; offset-bottom: 40px">
                 <a href="{{ path('add_daily_report') }}" class="uk-button uk-button-primary">Добавить</a>
+
+                <table class="uk-table uk-table-divider uk-table-striped">
+                    <thead>
+                    <tr>
+                        {% if app.user.organization.branches %}
+                            <th rowspan="3"></th>
+                        {% endif %}
+                        <th rowspan="3">Дата</th>
+                        <th colspan="10" class="uk-text-center">Количество работников</th>
+                        <th rowspan="3">Примечание</th>
+                        <th rowspan="3" style="width: 50px;"></th>
+                    </tr>
+                    <tr>
+                        <th rowspan="2">Фактическая численность</th>
+                        <th rowspan="2">На рабочем месте</th>
+                        <th rowspan="2">В отпуске</th>
+                        <th colspan="4">На дистанционной форме работы</th>
+                        <th rowspan="2">На 2х недельном карантине</th>
+                        <th rowspan="2">На больничном листе</th>
+                        <th rowspan="2">Заболевших (COVID-19)</th>
+                    </tr>
+                    <tr>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% if journal|length > 0 %}
+                        {% for item in journal %}
+                            <tr>
+                                {% if app.user.organization.branches %}
+                                    <td uk-toggle="target: #branch_{{ item.id }}">
+                                        <span uk-icon="triangle-down"></span>
+                                    </td>
+                                {% endif %}
+                                <td>{{ item.date|date('d.m.Y') }}</td>
+                                <td>{{ item.total }}</td>
+                                <td>{{ item.atWork }}</td>
+                                <td>{{ item.onHoliday }}</td>
+                                <td>{{ item.remoteTotal }}</td>
+                                <td>{{ item.remotePregnant }}</td>
+                                <td>{{ item.remoteWithChildren }}</td>
+                                <td>{{ item.remoteOver60 }}</td>
+                                <td>{{ item.onTwoWeekQuarantine }}</td>
+                                <td>{{ item.onSickLeave }}</td>
+                                <td>{{ item.sickCOVID }}</td>
+                                <td>{{ item.note }}</td>
+                                <td>
+                                    <ul class="uk-iconnav">
+                                        <li><a href="{{ path('edit_daily_report', {id: item.id}) }}"
+                                               uk-icon="icon: file-edit"
+                                               uk-tooltip="Редактировать"></a></li>
+                                        <li><a href="{{ path('delete_daily_report', {id: item.id}) }}"
+                                               class="delete_daily_report"
+                                               uk-icon="icon: trash"
+                                               uk-tooltip="Удалить"></a></li>
+                                    </ul>
+                                </td>
+                            </tr>
+
+                            {% if app.user.organization.branches %}
+                                {% set id = 'branch_' ~ item.id %}
+                                {% set item = item.branches[0] %}
+                                <tr class="branch" id="{{ id }}" hidden>
+                                    {% if app.user.organization.branches %}
+                                        <td></td>
+                                    {% endif %}
+                                    <td>{{ item.date|date('d.m.Y') }}</td>
+                                    <td>{{ item.total }}</td>
+                                    <td>{{ item.atWork }}</td>
+                                    <td>{{ item.onHoliday }}</td>
+                                    <td>{{ item.remoteTotal }}</td>
+                                    <td>{{ item.remotePregnant }}</td>
+                                    <td>{{ item.remoteWithChildren }}</td>
+                                    <td>{{ item.remoteOver60 }}</td>
+                                    <td>{{ item.onTwoWeekQuarantine }}</td>
+                                    <td>{{ item.onSickLeave }}</td>
+                                    <td>{{ item.sickCOVID }}</td>
+                                    <td>{{ item.note }}</td>
+                                    <td></td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="13" class="uk-text-center">Нет ни одной записи</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $(function () {
+            $(document).on('click', '.delete_daily_report', function (e) {
+                if (!confirm('Удалить запись?')) {
+                    e.preventDefault();
+                }
+            })
+        })
+    </script>
 {% endblock %}

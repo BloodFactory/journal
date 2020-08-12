@@ -33,6 +33,7 @@
     <select name="{{ full_name }}"
             class="uk-select"
             id="{{ id }}"
+            {% if disabled %}disabled{% endif %}
             style="width: 100%">
         {%- if placeholder is not none -%}
             <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ placeholder != '' ? (translation_domain is same as(false) ? placeholder : placeholder|trans({}, translation_domain)) }}</option>

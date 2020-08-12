@@ -3,6 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\JournalRepository;
+use DateTime;
+use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,7 +23,7 @@ class Journal
 
     /**
      * @ORM\ManyToOne(targetEntity=Organization::class)
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private ?Organization $organization;
 
@@ -77,6 +81,32 @@ class Journal
      * @ORM\Column(type="string", length=4000, nullable=true)
      */
     private ?string $note = '';
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Journal::class, inversedBy="branches")
+     */
+    private ?Journal $headOffice;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Journal::class, mappedBy="headOffice", fetch="EAGER")
+     */
+    private Collection $branches;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private ?DateTimeInterface $date;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private ?bool $isActive = true;
+
+    public function __construct()
+    {
+        $this->branches = new ArrayCollection();
+        $this->date = new DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -223,6 +253,73 @@ class Journal
     public function setNote(?string $note): self
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    public function getHeadOffice(): ?self
+    {
+        return $this->headOffice;
+    }
+
+    public function setHeadOffice(?self $headOffice): self
+    {
+        $this->headOffice = $headOffice;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getBranches(): Collection
+    {
+        return $this->branches;
+    }
+
+    public function addBranch(self $branch): self
+    {
+        if (!$this->branches->contains($branch)) {
+            $this->branches[] = $branch;
+            $branch->setHeadOffice($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBranch(self $branch): self
+    {
+        if ($this->branches->contains($branch)) {
+            $this->branches->removeElement($branch);
+            // set the owning side to null (unless already changed)
+            if ($branch->getHeadOffice() === $this) {
+                $branch->setHeadOffice(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDate(): ?DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(DateTimeInterface $date): self
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    public function getIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }

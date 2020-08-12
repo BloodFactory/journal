@@ -1,0 +1,416 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AddDailyReportController!{% endblock %}
+
+{% block body %}
+    <div class="uk-section uk-section-muted uk-flex uk-flex-middle" uk-height-viewport>
+        <div class="uk-width-1-1">
+            <div class="uk-container">
+                <div class="uk-card uk-card-default uk-card-body">
+                    <div class="uk-margin-bottom">
+                        <a href="{{ path('homepage') }}" class="uk-button uk-button-primary">
+                            <span class="uk-margin-small-right" uk-icon="arrow-left"></span> Назад
+                        </a>
+                    </div>
+
+                    {% set formName = 'journalForm' %}
+                    <form method="post"
+                          class="uk-form-horizontal"
+                          name="{{ formName }}">
+                        <div class="uk-flex">
+                            {% if app.user.organization.branches %}
+                                <ul class="uk-tab-left" uk-tab="index: 0">
+                                    <li><a href="#">Основная форма</a></li>
+                                    <li><a href="#">Филиалы</a></li>
+                                </ul>
+                            {% endif %}
+
+                            {% if app.user.organization.branches %}
+                            <ul class="uk-switcher uk-flex-1">
+                                <li>
+                                    {% endif %}
+                                    <div id="journalForm"
+                                         class="uk-padding uk-padding-remove-vertical"
+                                         style="width: 100%; box-sizing: border-box;">
+
+                                        <div class="uk-flex">
+                                            <label class="uk-form-label uk-margin-right">Организация</label>
+                                            <input type="text"
+                                                   disabled
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ app.user.organization.name }}"
+                                                   aria-label="Название организации">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_date' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Дата</label>
+                                            <input type="text"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input datepicker"
+                                                   style="width: 100%"
+                                                   value="{{ report.date|date('d.m.Y') }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_total' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Фактическая
+                                                численность</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.total }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_atWork' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">На рабочем месте</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.atWork }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_onHoliday' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">В отпуске</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.onHoliday }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_remoteTotal' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Общее количество работников
+                                                на
+                                                дистанционной
+                                                форме работы</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.remoteTotal }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_remotePregnant' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Беременные женщины на
+                                                дистанционной
+                                                форме
+                                                работы</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.remotePregnant }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_remoteWithChildren' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Женщины с детьми в возрасте
+                                                до 14 лет
+                                                на
+                                                дистанционной форме работы</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.remoteWithChildren }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_remoteOver60' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Работники старше 60 лет на
+                                                дистанционной
+                                                форме
+                                                работы</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.remoteOver60 }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_onTwoWeekQuarantine' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">На 2х недельном
+                                                карантине</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.onTwoWeekQuarantine }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_onSickLeave' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">На больничном</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.onSickLeave }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_sickCOVID' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Заболевших
+                                                (COVID-19)</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.sickCOVID }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_note' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Примечание</label>
+                                            <textarea id="{{ name }}"
+                                                      name="{{ name }}"
+                                                      class="uk-textarea"
+                                                      rows="3"
+                                                      style="width: 100%">{{ report.note }}</textarea>
+                                        </div>
+                                    </div>
+                                    {% if app.user.organization.branches %}
+                                </li>
+                                <li>
+                                    <div id="journalBranchesForm"
+                                         class="uk-padding uk-padding-remove-vertical">
+                                        {% set formName = 'journalBranchesForm' %}
+                                        <div class="uk-margin uk-flex">
+                                            <label class="uk-form-label uk-margin-right">Организация</label>
+                                            <input type="text"
+                                                   disabled
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="Филиалы {{ app.user.organization.name }}"
+                                                   aria-label="Название организации">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_total' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Фактическая
+                                                численность</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.branches[0].total }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_atWork' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">На рабочем месте</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.branches[0].atWork }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_onHoliday' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">В отпуске</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.branches[0].onHoliday }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_remoteTotal' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Общее количество работников
+                                                на
+                                                дистанционной
+                                                форме работы</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.branches[0].remoteTotal }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_remotePregnant' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Беременные женщины на
+                                                дистанционной
+                                                форме
+                                                работы</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.branches[0].remotePregnant }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_remoteWithChildren' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Женщины с детьми в возрасте
+                                                до 14 лет
+                                                на
+                                                дистанционной форме работы</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.branches[0].remoteWithChildren }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_remoteOver60' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Работники старше 60 лет на
+                                                дистанционной
+                                                форме
+                                                работы</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.branches[0].remoteOver60 }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_onTwoWeekQuarantine' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">На 2х недельном
+                                                карантине</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.branches[0].onTwoWeekQuarantine }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_onSickLeave' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">На больничном</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.branches[0].onSickLeave }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_sickCOVID' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Заболевших
+                                                (COVID-19)</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.branches[0].sickCOVID }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_note' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Примечание</label>
+                                            <textarea id="{{ name }}"
+                                                      name="{{ name }}"
+                                                      class="uk-textarea"
+                                                      rows="3"
+                                                      style="width: 100%">{{ report.branches[0].note }}</textarea>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            {% endif %}
+                        </div>
+
+                        <button class="uk-button uk-button-primary">Сохранить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            $('.datepicker').datepicker({
+                dayNames: ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"],
+                dayNamesMin: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+                dayNamesShort: ["Вос", "Пон", "Вто", "Сре", "Чет", "Пят", "Суб"],
+                monthNames: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
+                monthNamesShort: ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"],
+                firstDay: 1,
+                changeYear: true,
+                changeMonth: true,
+                dateFormat: "dd.mm.yy"
+            });
+        })
+    </script>
+{% endblock %}

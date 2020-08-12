@@ -116,4 +116,9 @@ class Organization
 
         return $this;
     }
+
+    public function __sleep()
+    {
+        return [];
+    }
 }

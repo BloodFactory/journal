@@ -13,10 +13,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class FillDictionariesCommand extends Command
 {
     private EntityManagerInterface $entityManager;
+    private string $projectDir;
 
-    public function __construct(EntityManagerInterface $entityManager, string $name = 'dictionaries:fill')
+    public function __construct(EntityManagerInterface $entityManager, string $projectDir, string $name = 'dictionaries:fill')
     {
         $this->entityManager = $entityManager;
+        $this->projectDir = $projectDir;
         parent::__construct($name);
     }
 
@@ -34,7 +36,7 @@ class FillDictionariesCommand extends Command
 
     private function fillOrganizationsGroups(): array
     {
-        $organizationsTypes = require __DIR__ . '/OrganizationsTypes.php';
+        $organizationsTypes = require $this->projectDir . '/config/OrganizationsTypes.php';
 
         foreach ($organizationsTypes as $key => $organizationType) {
             if (null === $organizationType) continue;
@@ -52,7 +54,7 @@ class FillDictionariesCommand extends Command
 
     private function fillOrganizations(array $organizationsTypes): void
     {
-        $organizations = require __DIR__ . '/Organizations.php';
+        $organizations = require $this->projectDir . '/config/Organizations.php';
 
         foreach ($organizations as $organization) {
             $org = new Organization();

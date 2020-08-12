@@ -19,6 +19,7 @@ class DailyReportForm extends AbstractType
             ->setMethod('POST')
             ->setAction('add_daily_report')
             ->add('organization', EntityType::class, [
+                'disabled' => true,
                 'label' => 'Организация',
                 'class' => Organization::class,
                 'choice_label' => 'name'
@@ -57,9 +58,6 @@ class DailyReportForm extends AbstractType
                 'required' => false,
                 'label' => 'Примечание',
                 'empty_data' => null
-            ])
-            ->add('save', ButtonType::class, [
-                'label' => 'Сохранить'
             ]);
     }
 }

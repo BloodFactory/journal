@@ -1,4 +1,16 @@
 {
+    "cache/adapter-common": {
+        "version": "1.1.0"
+    },
+    "cache/apcu-adapter": {
+        "version": "1.0.0"
+    },
+    "cache/simple-cache-bridge": {
+        "version": "1.0.0"
+    },
+    "cache/tag-interop": {
+        "version": "1.0.0"
+    },
     "composer/package-versions-deprecated": {
         "version": "1.10.99"
     },

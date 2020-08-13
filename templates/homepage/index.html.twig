@@ -22,11 +22,46 @@
 {% endblock %}
 
 {% block body %}
-    <div class="uk-section uk-section-muted uk-section-small" uk-height-viewport>
+    <div class="uk-section uk-section-muted uk-section-small"
+         uk-height-viewport>
         <div class="uk-container uk-container-large">
             <div class="uk-card uk-card-default uk-card-body uk-card-small"
                  uk-height-viewport="offset-top: true; offset-bottom: 40px">
-                <a href="{{ path('add_daily_report') }}" class="uk-button uk-button-primary">Добавить</a>
+                <div class="uk-flex uk-flex-between">
+                    <div>
+                        <a href="{{ path('add_daily_report') }}"
+                           class="uk-button uk-button-primary">Добавить</a>
+
+                        <button class="uk-button uk-button-secondary" id="downloadJournal">
+                            <span class="uk-margin-small-right"
+                                  uk-icon="file"></span>
+                            Скачать (EXCEL)
+                        </button>
+                    </div>
+
+                    <div class="uk-display-inline-block uk-margin-left">
+                        <form action=""
+                              class="uk-flex">
+                            <div class="uk-flex uk-flex-middle uk-margin-small-right">
+                                <label class="uk-form-label uk-margin-small-right"
+                                       for="form-stacked-text">Дата: </label>
+                                <div class="uk-form-controls">
+                                    <input class="uk-input datepicker"
+                                           id="date"
+                                           name="date"
+                                           type="text"
+                                           value="{{ date|date('d.m.Y') }}"
+                                           aria-label="Дата">
+                                </div>
+                            </div>
+
+                            <button class="uk-button uk-button-default">
+                                <span uk-icon="icon: search"></span>
+                                Искать
+                            </button>
+                        </form>
+                    </div>
+                </div>
 
                 <table class="uk-table uk-table-divider uk-table-striped">
                     <thead>
@@ -115,7 +150,7 @@
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="13" class="uk-text-center">Нет ни одной записи</td>
+                            <td colspan="14" class="uk-text-center">Нет ни одной записи</td>
                         </tr>
                     {% endif %}
                     </tbody>
@@ -130,10 +165,35 @@
 
     <script>
         $(function () {
+            $('.datepicker').datepicker({
+                firstDay: 1,
+                dateFormat: 'dd.mm.yy',
+                dayNames: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
+                dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+                dayNamesShort: ['Вос', 'Пон', 'Вто', 'Сре', 'Чет', 'Пят', 'Суб'],
+                monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+                nextText: 'Вперед',
+                prevText: 'Назад',
+                showAnim: 'slideDown',
+                showOtherMonths: true,
+                weekHeader: 'Нед',
+                changeMonth: true,
+                changeYear: true
+            });
+
             $(document).on('click', '.delete_daily_report', function (e) {
                 if (!confirm('Удалить запись?')) {
                     e.preventDefault();
                 }
+            })
+
+            $('#downloadJournal').on('click', function (e) {
+                e.preventDefault();
+
+                var date = $('#date').val();
+
+                window.location = '/download?date=' + date;
             })
         })
     </script>

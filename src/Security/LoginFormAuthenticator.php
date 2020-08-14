@@ -63,11 +63,15 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
-        if (!$this->csrfTokenManager->isTokenValid($token)) {
+        if (!$this->csrfTokenManager->isTokenValid($token)) {	
             throw new InvalidCsrfTokenException();
         }
 
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $credentials['username']]);
+	try {
+	        $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $credentials['username']]);
+	} catch(\Exception $e) {
+	         dd($e);
+	}
 
         if (!$user) {
             // fail authentication with a custom error

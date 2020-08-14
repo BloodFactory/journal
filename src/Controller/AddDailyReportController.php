@@ -27,8 +27,6 @@ class AddDailyReportController extends AbstractController
         $user = $this->getUser();
         $organization = $user->getOrganization();
         $report = new Journal();
-        $reportBranch = new Journal();
-        $report->addBranch($reportBranch);
 
         if ('POST' === $request->getMethod()) {
             $data = $request->request->all();
@@ -60,6 +58,9 @@ class AddDailyReportController extends AbstractController
                 ->setNote($data['journalForm_note']);
 
             if ($organization->getBranches()) {
+                $reportBranch = new Journal();
+                $report->addBranch($reportBranch);
+
                 $reportBranch
                     ->setDate($date)
                     ->setTotal((int)$data['journalBranchesForm_total'])
@@ -76,7 +77,6 @@ class AddDailyReportController extends AbstractController
 
                 $em->persist($reportBranch);
             }
-
 
             $em->persist($report);
             $em->flush();

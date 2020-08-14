@@ -1,6 +1,6 @@
 security:
     role_hierarchy:
-        ROLE_REPORTER: ROLE_USER
+        ROLE_MORFLOT: ROLE_USER
         ROLE_OBSERVER: ROLE_USER
 
     encoders:

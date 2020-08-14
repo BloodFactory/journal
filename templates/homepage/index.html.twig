@@ -31,12 +31,13 @@
                     <div>
                         <a href="{{ path('add_daily_report') }}"
                            class="uk-button uk-button-primary">Добавить</a>
-
+                        {% if is_granted('ROLE_MORFLOT')  %}
                         <button class="uk-button uk-button-secondary" id="downloadJournal">
                             <span class="uk-margin-small-right"
                                   uk-icon="file"></span>
                             Скачать (EXCEL)
-                        </button>
+                        </button> 
+			{% endif  %}
                     </div>
 
                     <div class="uk-display-inline-block uk-margin-left">
@@ -66,9 +67,12 @@
                 <table class="uk-table uk-table-divider uk-table-striped">
                     <thead>
                     <tr>
-                        {% if app.user.organization.branches %}
-                            <th rowspan="3"></th>
-                        {% endif %}
+                      
+                            <th rowspan="3" style="width: 20px;php"></th>
+                      
+                        {% if is_granted('ROLE_MORFLOT')  %}
+        	                <th rowspan="3">Организация</th>
+	                {% endif %}
                         <th rowspan="3">Дата</th>
                         <th colspan="10" class="uk-text-center">Количество работников</th>
                         <th rowspan="3">Примечание</th>
@@ -95,11 +99,18 @@
                     {% if journal|length > 0 %}
                         {% for item in journal %}
                             <tr>
-                                {% if app.user.organization.branches %}
-                                    <td uk-toggle="target: #branch_{{ item.id }}">
-                                        <span uk-icon="triangle-down"></span>
+                                    <td>
+	                                {% if item.organization.branches %}
+        	                               <span uk-toggle="target: #branch_{{ item.id }}" uk-icon="triangle-down"></span>
+	                                {% endif %}
                                     </td>
-                                {% endif %}
+	                        {% if is_granted('ROLE_MORFLOT')  %}
+	                                <td>
+						{%  if item.organization is not null %}
+							{{ item.organization.name }}
+			        	        {% endif %}
+					</td>
+	        	        {% endif %}
                                 <td>{{ item.date|date('d.m.Y') }}</td>
                                 <td>{{ item.total }}</td>
                                 <td>{{ item.atWork }}</td>
@@ -114,24 +125,27 @@
                                 <td>{{ item.note }}</td>
                                 <td>
                                     <ul class="uk-iconnav">
+					{% if app.user.organization.id == item.organization.id  %}
                                         <li><a href="{{ path('edit_daily_report', {id: item.id}) }}"
                                                uk-icon="icon: file-edit"
                                                uk-tooltip="Редактировать"></a></li>
                                         <li><a href="{{ path('delete_daily_report', {id: item.id}) }}"
                                                class="delete_daily_report"
                                                uk-icon="icon: trash"
-                                               uk-tooltip="Удалить"></a></li>
+                                               uphpk-tooltip="Удалить"></a></li>
+					{% endif  %}
                                     </ul>
                                 </td>
                             </tr>
 
-                            {% if app.user.organization.branches %}
+                            {% if item.organization.branches %}
                                 {% set id = 'branch_' ~ item.id %}
                                 {% set item = item.branches[0] %}
                                 <tr class="branch" id="{{ id }}" hidden>
-                                    {% if app.user.organization.branches %}
-                                        <td></td>
-                                    {% endif %}
+	                                <td></td>
+	                	        {% if is_granted('ROLE_MORFLOT')  %}
+	                                <td></td>
+	        	       	        {% endif %}
                                     <td>{{ item.date|date('d.m.Y') }}</td>
                                     <td>{{ item.total }}</td>
                                     <td>{{ item.atWork }}</td>
@@ -149,7 +163,7 @@
                             {% endif %}
                         {% endfor %}
                     {% else %}
-                        <tr>
+                        <tr>            php
                             <td colspan="14" class="uk-text-center">Нет ни одной записи</td>
                         </tr>
                     {% endif %}

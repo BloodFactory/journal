@@ -21,7 +21,7 @@ class DownloadExcelController extends AbstractController
 {
     /**
      * @Route("/download")
-     * @IsGranted("ROLE_USER")
+     * @IsGranted("ROLE_MORFLOT")
      * @param Request $request
      * @param KernelInterface $kernel
      * @return Response

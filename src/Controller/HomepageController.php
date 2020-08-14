@@ -39,11 +39,17 @@ class HomepageController extends AbstractController
             $date = new DateTime();
         }
 
-        $journal = $this->getDoctrine()->getRepository(Journal::class)->findBy([
+	
+	$filters= [
             'date' => $date,
-            'organization' => $organization,
-            'isActive' => true
-        ], [
+            'isActive' => true,
+	    'headOffice' => null
+        ];
+ 	if (!$this->isGranted('ROLE_MORFLOT')) {
+  		$filters['organization'] = $organization;	
+	}
+
+        $journal = $this->getDoctrine()->getRepository(Journal::class)->findBy($filters, [
             'date' => 'ASC'
         ]);
 

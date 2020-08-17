@@ -27,7 +27,10 @@ class AddDailyReportController extends AbstractController
         $user = $this->getUser();
         $organization = $user->getOrganization();
         $report = new Journal();
-
+        if ($organization->getBranches()) {
+		$branch = new Journal();
+		$report->addBranch($branch);
+	}
         if ('POST' === $request->getMethod()) {
             $data = $request->request->all();
 
@@ -58,8 +61,7 @@ class AddDailyReportController extends AbstractController
                 ->setNote($data['journalForm_note']);
 
             if ($organization->getBranches()) {
-                $reportBranch = new Journal();
-                $report->addBranch($reportBranch);
+                $reportBranch = $report->getBranches()[0];
 
                 $reportBranch
                     ->setDate($date)
@@ -77,6 +79,24 @@ class AddDailyReportController extends AbstractController
 
                 $em->persist($reportBranch);
             }
+            if ($data['journalForm_total']==0 && $data['journalForm_total']==0 && $data['journalForm_atWork']==0 && $data['journalForm_onHoliday']==0 && $data['journalForm_remoteTotal']==0 
+		&& $data['journalForm_remotePregnant']==0 && $data['journalForm_remoteWithChildren']==0 && $data['journalForm_remoteOver60']==0 && $data['journalForm_onTwoWeekQuarantine']==0
+		&& $data['journalForm_onSickLeave']==0 && $data['journalForm_sickCOVID']==0) {
+		        return $this->render('daily_report/index.html.twig', [
+		            'report' => $report,
+		            'query' => $request->getSession()->get(HomepageController::SESSION_KEY), 
+			    'error' => 'Все поля структуры "Количество работников" не могут быть нулями'	
+		        ]);
+	    } 
+            if ($data['journalBranchesForm_total']==0 && $data['journalBranchesForm_total']==0 && $data['journalBranchesForm_atWork']==0 && $data['journalBranchesForm_onHoliday']==0 && $data['journalBranchesForm_remoteTotal']==0 
+		&& $data['journalBranchesForm_remotePregnant']==0 && $data['journalBranchesForm_remoteWithChildren']==0 && $data['journalBranchesForm_remoteOver60']==0 && $data['journalBranchesForm_onTwoWeekQuarantine']==0
+		&& $data['journalBranchesForm_onSickLeave']==0 && $data['journalBranchesForm_sickCOVID']==0) {
+		        return $this->render('daily_report/index.html.twig', [
+		            'report' => $report,
+		            'query' => $request->getSession()->get(HomepageController::SESSION_KEY), 
+			    'error' => 'Все поля структуры "Количество работников" у филиалов не могут быть нулями'	
+		        ]);
+	    } 
 
             $em->persist($report);
             $em->flush();

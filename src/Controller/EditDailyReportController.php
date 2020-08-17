@@ -75,7 +75,16 @@ class EditDailyReportController extends AbstractController
 		        return $this->render('daily_report/index.html.twig', [
 		            'report' => $report,
 		            'query' => $request->getSession()->get(HomepageController::SESSION_KEY), 
-			    'error' => 'Все поля не могут быть нулями'	
+			    'error' => 'Все поля структуры "Количество работников" не могут быть нулями'	
+		        ]);
+	    } 
+            if ($data['journalBranchesForm_total']==0 && $data['journalBranchesForm_total']==0 && $data['journalBranchesForm_atWork']==0 && $data['journalBranchesForm_onHoliday']==0 && $data['journalBranchesForm_remoteTotal']==0 
+		&& $data['journalBranchesForm_remotePregnant']==0 && $data['journalBranchesForm_remoteWithChildren']==0 && $data['journalBranchesForm_remoteOver60']==0 && $data['journalBranchesForm_onTwoWeekQuarantine']==0
+		&& $data['journalBranchesForm_onSickLeave']==0 && $data['journalBranchesForm_sickCOVID']==0) {
+		        return $this->render('daily_report/index.html.twig', [
+		            'report' => $report,
+		            'query' => $request->getSession()->get(HomepageController::SESSION_KEY), 
+			    'error' => 'Все поля структуры "Количество работников" у филиалов не могут быть нулями'	
 		        ]);
 	    } 
 

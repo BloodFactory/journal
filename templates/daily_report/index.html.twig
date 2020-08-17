@@ -12,7 +12,12 @@
                             <span class="uk-margin-small-right" uk-icon="arrow-left"></span> Назад
                         </a>
                     </div>
-
+                    {% if error is defined %}
+			<div class="uk-alert-danger" uk-alert>
+				    <a class="uk-alert-close" uk-close></a>
+				    <p>{{error}}</p>
+			</div>
+                    {% endif %}
                     {% set formName = 'journalForm' %}
                     <form method="post"
                           class="uk-form-horizontal"

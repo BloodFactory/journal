@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 declare(strict_types=1);
 
 namespace App\Controller;
@@ -31,7 +31,6 @@ class EditDailyReportController extends AbstractController
 
         if ('POST' === $request->getMethod()) {
             $data = $request->request->all();
-
             $em = $this->getDoctrine()->getManager();
             $date = new DateTime($data['journalForm_date']);
 
@@ -70,9 +69,19 @@ class EditDailyReportController extends AbstractController
 
                 $em->persist($reportBranch);
             }
+            if ($data['journalForm_total']==0 && $data['journalForm_total']==0 && $data['journalForm_atWork']==0 && $data['journalForm_onHoliday']==0 && $data['journalForm_remoteTotal']==0 
+		&& $data['journalForm_remotePregnant']==0 && $data['journalForm_remoteWithChildren']==0 && $data['journalForm_remoteOver60']==0 && $data['journalForm_onTwoWeekQuarantine']==0
+		&& $data['journalForm_onSickLeave']==0 && $data['journalForm_sickCOVID']==0) {
+		        return $this->render('daily_report/index.html.twig', [
+		            'report' => $report,
+		            'query' => $request->getSession()->get(HomepageController::SESSION_KEY), 
+			    'error' => 'Все поля не могут быть нулями'	
+		        ]);
+	    } 
 
             $em->persist($report);
             $em->flush();
+	    return $this->redirectToRoute('homepage',$request->getSession()->get(HomepageController::SESSION_KEY));	
         }
 
         return $this->render('daily_report/index.html.twig', [

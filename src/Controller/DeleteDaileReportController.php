@@ -1,8 +1,7 @@
-<?php
+﻿<?php 
 declare(strict_types=1);
 
 namespace App\Controller;
-
 use App\Entity\Journal;
 use App\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;

@@ -48,7 +48,7 @@ class AddDailyReportController extends AbstractController
                 ->setTotal((int)$data['journalForm_total'])
                 ->setAtWork((int)$data['journalForm_atWork'])
                 ->setOnHoliday((int)$data['journalForm_onHoliday'])
-                ->setRemoteTotal((int)$data['journalForm_onHoliday'])
+                ->setRemoteTotal((int)$data['journalForm_remoteTotal'])
                 ->setRemotePregnant((int)$data['journalForm_remotePregnant'])
                 ->setRemoteWithChildren((int)$data['journalForm_remoteWithChildren'])
                 ->setRemoteOver60((int)$data['journalForm_remoteOver60'])
@@ -66,7 +66,7 @@ class AddDailyReportController extends AbstractController
                     ->setTotal((int)$data['journalBranchesForm_total'])
                     ->setAtWork((int)$data['journalBranchesForm_atWork'])
                     ->setOnHoliday((int)$data['journalBranchesForm_onHoliday'])
-                    ->setRemoteTotal((int)$data['journalBranchesForm_onHoliday'])
+                    ->setRemoteTotal((int)$data['journalBranchesForm_remoteTotal'])
                     ->setRemotePregnant((int)$data['journalBranchesForm_remotePregnant'])
                     ->setRemoteWithChildren((int)$data['journalBranchesForm_remoteWithChildren'])
                     ->setRemoteOver60((int)$data['journalBranchesForm_remoteOver60'])
@@ -81,11 +81,12 @@ class AddDailyReportController extends AbstractController
             $em->persist($report);
             $em->flush();
 
-            return $this->redirectToRoute('homepage');
+            return $this->redirectToRoute('homepage', $request->getSession()->get(HomepageController::SESSION_KEY));
         }
 
         return $this->render('daily_report/index.html.twig', [
-            'report' => $report
+            'report' => $report,
+            'query' => $request->getSession()->get(HomepageController::SESSION_KEY)
         ]);
     }
 }

@@ -14,6 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomepageController extends AbstractController
 {
+    public const SESSION_KEY = 'homepage';
+
     /**
      * @Route("/", name="homepage")
      * @IsGranted("ROLE_USER")
@@ -39,19 +41,20 @@ class HomepageController extends AbstractController
             $date = new DateTime();
         }
 
-	
-	$filters= [
+        $filters = [
             'date' => $date,
             'isActive' => true,
-	    'headOffice' => null
+            'headOffice' => null
         ];
- 	if (!$this->isGranted('ROLE_MORFLOT')) {
-  		$filters['organization'] = $organization;	
-	}
+        if (!$this->isGranted('ROLE_MORFLOT')) {
+            $filters['organization'] = $organization;
+        }
 
         $journal = $this->getDoctrine()->getRepository(Journal::class)->findBy($filters, [
             'date' => 'ASC'
         ]);
+
+        $request->getSession()->set(self::SESSION_KEY, $query->all());
 
         return $this->render('homepage/index.html.twig', [
             'journal' => $journal,

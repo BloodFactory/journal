@@ -58,7 +58,7 @@ class DownloadExcelController extends AbstractController
 //            'date' => 'ASC'
 //        ]);
 
-        $journal = $this
+        $journalE = $this
             ->getDoctrine()
             ->getRepository(Journal::class)
             ->createQueryBuilder('j')

@@ -102,6 +102,11 @@ class Journal
      */
     private ?bool $isActive = true;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $shift_rest;
+
     public function __construct()
     {
         $this->branches = new ArrayCollection();
@@ -320,6 +325,18 @@ class Journal
     public function setIsActive(bool $isActive): self
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    public function getShiftRest(): ?int
+    {
+        return $this->shift_rest;
+    }
+
+    public function setShiftRest(?int $shift_rest): self
+    {
+        $this->shift_rest = $shift_rest;
 
         return $this;
     }

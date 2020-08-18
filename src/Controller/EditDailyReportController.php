@@ -47,6 +47,7 @@ class EditDailyReportController extends AbstractController
                 ->setOnTwoWeekQuarantine((int)$data['journalForm_onTwoWeekQuarantine'])
                 ->setOnSickLeave((int)$data['journalForm_onSickLeave'])
                 ->setSickCOVID((int)$data['journalForm_sickCOVID'])
+                ->setShiftRest((int)$data['journalForm_ShiftRest'])
                 ->setNote($data['journalForm_note']);
 
             if ($organization->getBranches()) {
@@ -65,13 +66,14 @@ class EditDailyReportController extends AbstractController
                     ->setOnTwoWeekQuarantine((int)$data['journalBranchesForm_onTwoWeekQuarantine'])
                     ->setOnSickLeave((int)$data['journalBranchesForm_onSickLeave'])
                     ->setSickCOVID((int)$data['journalBranchesForm_sickCOVID'])
+	            ->setShiftRest((int)$data['journalBranchesForm_ShiftRest'])
                     ->setNote($data['journalBranchesForm_note']);
 
                 $em->persist($reportBranch);
             }
             if ($data['journalForm_total']==0 && $data['journalForm_total']==0 && $data['journalForm_atWork']==0 && $data['journalForm_onHoliday']==0 && $data['journalForm_remoteTotal']==0 
 		&& $data['journalForm_remotePregnant']==0 && $data['journalForm_remoteWithChildren']==0 && $data['journalForm_remoteOver60']==0 && $data['journalForm_onTwoWeekQuarantine']==0
-		&& $data['journalForm_onSickLeave']==0 && $data['journalForm_sickCOVID']==0) {
+		&& $data['journalForm_onSickLeave']==0 && $data['journalForm_sickCOVID']==0 && $data['journalForm_ShiftRest']==0) {
 		        return $this->render('daily_report/index.html.twig', [
 		            'report' => $report,
 		            'query' => $request->getSession()->get(HomepageController::SESSION_KEY), 
@@ -81,7 +83,7 @@ class EditDailyReportController extends AbstractController
             if ($organization->getBranches()) {
 	            if ($data['journalBranchesForm_total']==0 && $data['journalBranchesForm_total']==0 && $data['journalBranchesForm_atWork']==0 && $data['journalBranchesForm_onHoliday']==0 && $data['journalBranchesForm_remoteTotal']==0 
 			&& $data['journalBranchesForm_remotePregnant']==0 && $data['journalBranchesForm_remoteWithChildren']==0 && $data['journalBranchesForm_remoteOver60']==0 && $data['journalBranchesForm_onTwoWeekQuarantine']==0
-			&& $data['journalBranchesForm_onSickLeave']==0 && $data['journalBranchesForm_sickCOVID']==0) {
+			&& $data['journalBranchesForm_onSickLeave']==0 && $data['journalBranchesForm_sickCOVID']==0 && $data['journalBranchesForm_ShiftRest']==0) {
 		        return $this->render('daily_report/index.html.twig', [
 		            'report' => $report,
 		            'query' => $request->getSession()->get(HomepageController::SESSION_KEY), 

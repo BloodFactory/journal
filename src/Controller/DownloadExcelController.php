@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Controller;         
 
 use App\Entity\Journal;
 use App\Entity\User;
@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
+Use Doctrine\ORM\Query\ResultSetMapping;
+Use Doctrine\ORM\EntityManager;
 
 class DownloadExcelController extends AbstractController
 {
@@ -53,12 +55,25 @@ class DownloadExcelController extends AbstractController
 //        if (!$this->isGranted('ROLE_MORFLOT')) {
 //            $filters['organization'] = $organization;
 //        }
-
+//	$query = $em->createNativeQuery( 'CALL procedureName(:param1, :param2)', $rsm )
 //        $journal = $this->getDoctrine()->getRepository(Journal::class)->findBy($filters, [
 //            'date' => 'ASC'
 //        ]);
+//	$em    = $this->get( 'doctrine.orm.entity_manager' );
+//	$rsm   = new resultClass ();
+	$rsm = new ResultSetMapping();
+	//dd($this->getDoctrine()->getManager());
+	$query = $this->getDoctrine()->getManager()->createNativeQuery( 'SELECT * FROM journal WHERE date=? AND is_active=?',$rsm)
+        	    ->setParameters( array(
+                	'date' => $date,
+	                'isActive' => true
+        	    ) )->resultClass('Journal');
+//	$result = $query->getResult();
+	$result = $query->execute(); // Also tried
 
-        $journal = $this
+	$em->flush();
+
+  /*      $journal = $this
             ->getDoctrine()
             ->getRepository(Journal::class)
             ->createQueryBuilder('j')
@@ -72,8 +87,8 @@ class DownloadExcelController extends AbstractController
             ->addOrderBy('org_type.id', 'ASC')
             ->addOrderBy('org.id', 'ASC')
             ->getQuery()
-            ->getResult();
-//        dd($j);
+            ->getResult(); */
+        dd($result);
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();

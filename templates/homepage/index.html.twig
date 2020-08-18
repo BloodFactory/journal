@@ -74,7 +74,7 @@
         	                <th rowspan="3">Организация</th>
 	                {% endif %}
                         <th rowspan="3">Дата</th>
-                        <th colspan="10" class="uk-text-center">Количество работников</th>
+                        <th colspan="11" class="uk-text-center">Количество работников</th>
                         <th rowspan="3">Примечание</th>
                         <th rowspan="3" style="width: 50px;"></th>
                     </tr>
@@ -86,6 +86,7 @@
                         <th rowspan="2">На 2х недельном карантине</th>
                         <th rowspan="2">На больничном листе</th>
                         <th rowspan="2">Заболевших (COVID-19)</th>
+                        <th rowspan="2">Выходной/<br>межвахтовый отдых</th>
                     </tr>
                     <tr>
                         <th>1</th>
@@ -122,6 +123,7 @@
                                 <td>{{ item.onTwoWeekQuarantine }}</td>
                                 <td>{{ item.onSickLeave }}</td>
                                 <td>{{ item.sickCOVID }}</td>
+                                <td>{{ item.ShiftRest }}</td>
                                 <td>{{ item.note }}</td>
                                 <td>
                                     <ul class="uk-iconnav">

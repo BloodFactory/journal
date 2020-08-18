@@ -206,6 +206,19 @@
                                         </div>
 
                                         <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_ShiftRest' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Выходной/межвахтовый отдых</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.sickCOVID }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
                                             {% set name = formName ~ '_note' %}
                                             <label for="{{ name }}"
                                                    class="uk-form-label uk-margin-right">Примечание</label>
@@ -375,6 +388,19 @@
                                                    class="uk-input"
                                                    style="width: 100%"
                                                    value="{{ report.branches[0].sickCOVID }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_ShiftRest' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Выходной/межвахтовый отдых</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.branches[0].ShiftRest }}">
                                         </div>
 
                                         <div class="uk-margin uk-flex">

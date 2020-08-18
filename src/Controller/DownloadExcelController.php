@@ -48,30 +48,30 @@ class DownloadExcelController extends AbstractController
                 $date = new DateTime();
             }
         }
-//        $filters = [
-//            'date' => $date,
-//            'isActive' => true
-//        ];
-//        if (!$this->isGranted('ROLE_MORFLOT')) {
-//            $filters['organization'] = $organization;
-//        }
+        $filters = [
+            'date' => $date,
+            'isActive' => true
+        ];
+        if (!$this->isGranted('ROLE_MORFLOT')) {
+            $filters['organization'] = $organization;
+        }
 //	$query = $em->createNativeQuery( 'CALL procedureName(:param1, :param2)', $rsm )
-//        $journal = $this->getDoctrine()->getRepository(Journal::class)->findBy($filters, [
-//            'date' => 'ASC'
-//        ]);
+        $journal = $this->getDoctrine()->getRepository(Journal::class)->findBy($filters, [
+            'date' => 'ASC'
+        ]);
 //	$em    = $this->get( 'doctrine.orm.entity_manager' );
 //	$rsm   = new resultClass ();
-	$rsm = new ResultSetMapping();
+//	$rsm = new ResultSetMapping();
 	//dd($this->getDoctrine()->getManager());
-	$query = $this->getDoctrine()->getManager()->createNativeQuery( 'SELECT * FROM journal WHERE date=? AND is_active=?',$rsm)
+/*	$query = $this->getDoctrine()->getManager()->createNativeQuery( 'SELECT * FROM journal WHERE date=? AND is_active=?',$rsm)
         	    ->setParameters( array(
                 	'date' => $date,
 	                'isActive' => true
-        	    ) )->resultClass('Journal');
+        	    ) )->resultClass('Journal'); */
 //	$result = $query->getResult();
-	$result = $query->execute(); // Also tried
+//	$result = $query->execute(); // Also tried
 
-	$em->flush();
+//	$em->flush();
 
   /*      $journal = $this
             ->getDoctrine()
@@ -88,7 +88,7 @@ class DownloadExcelController extends AbstractController
             ->addOrderBy('org.id', 'ASC')
             ->getQuery()
             ->getResult(); */
-        dd($result);
+//        dd($result);
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();

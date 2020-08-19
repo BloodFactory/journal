@@ -42,7 +42,11 @@ class AddDailyReportController extends AbstractController
                     'date' => $date,
                     'isActive' => true
                 ])) {
-                throw new BadRequestHttpException("В системе уже имеется запись датрованная {$date->format('d.m.Y')} от организации {$organization->getName()}");
+		        return $this->render('daily_report/index.html.twig', [
+		            'report' => $report,
+		            'query' => $request->getSession()->get(HomepageController::SESSION_KEY), 
+			    'error' => "В системе уже имеется запись датрованная {$date->format('d.m.Y')} от организации {$organization->getName()}"	
+		        ]);
             }
 
             $report

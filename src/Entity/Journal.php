@@ -340,4 +340,5 @@ class Journal
 
         return $this;
     }
+
 }

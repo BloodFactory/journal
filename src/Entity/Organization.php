@@ -40,6 +40,11 @@ class Organization
      */
     private Collection $users;
 
+    /**
+     * @ORM\Column(type="string", length=7000, nullable=true)
+     */
+    private $Contact;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -120,5 +125,17 @@ class Organization
     public function __sleep()
     {
         return [];
+    }
+
+    public function getContact(): ?string
+    {
+        return $this->Contact;
+    }
+
+    public function setContact(?string $Contact): self
+    {
+        $this->Contact = $Contact;
+
+        return $this;
     }
 }

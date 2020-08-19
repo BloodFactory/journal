@@ -30,16 +30,23 @@
                 <div class="uk-flex uk-flex-between">
                     <div>
                         <a href="{{ path('add_daily_report') }}"
-                           class="uk-button uk-button-primary">Добавить</a>
+                           class="uk-button uk-button-primary">
+                        <span class="uk-margin-small-right"
+                              uk-icon="plus"></span>
+                            Добавить
+                        </a>
                         {% if is_granted('ROLE_MORFLOT')  %}
                         <button class="uk-button uk-button-secondary" id="downloadJournal">
                             <span class="uk-margin-small-right"
-                                  uk-icon="file"></span>
+                                  uk-icon="download"></span>
                             Скачать (EXCEL)
                         </button> 
 			{% endif  %}
                         <a href="{{ path('app_logout') }}"
-                           class="uk-button uk-button-danger">Выход</a>
+                           class="uk-button uk-button-danger">
+                            <span class="uk-margin-small-right" uk-icon="sign-out"></span>
+                            Выход
+                        </a>
                     </div>
 
                     <div class="uk-display-inline-block uk-margin-left">

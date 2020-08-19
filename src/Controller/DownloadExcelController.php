@@ -285,11 +285,12 @@ class DownloadExcelController extends AbstractController
 
         $filesize = filesize($filename);
         $file = file_get_contents($filename);
-
+	$y=$date->format('d.m.Y');
+	$s= "attachment; filename=\"Доклад ОШ $y.xlsx\"";
         $response = new Response($file, Response::HTTP_OK, [
             'Accept-Ranges' => 'bytes',
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition' => 'attachment; filename=journal.xlsx',
+            'Content-Disposition' => $s,
             'Content-Length' => $filesize
         ]);
 

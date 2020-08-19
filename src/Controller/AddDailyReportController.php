@@ -48,7 +48,8 @@ class AddDailyReportController extends AbstractController
             $report
                 ->setOrganization($organization)
                 ->setDate($date)
-                ->setTotal((int)$data['journalForm_total'])
+                ->setTotal((int)$data['journalForm_atWork']+(int)$data['journalForm_onHoliday']+(int)$data['journalForm_remoteTotal']+(int)$data['journalForm_onTwoWeekQuarantine']+
+			(int)$data['journalForm_onSickLeave']+(int)$data['journalForm_sickCOVID']+(int)$data['journalForm_ShiftRest'])
                 ->setAtWork((int)$data['journalForm_atWork'])
                 ->setOnHoliday((int)$data['journalForm_onHoliday'])
                 ->setRemoteTotal((int)$data['journalForm_remoteTotal'])
@@ -66,7 +67,8 @@ class AddDailyReportController extends AbstractController
 
                 $reportBranch
                     ->setDate($date)
-                    ->setTotal((int)$data['journalBranchesForm_total'])
+                ->setTotal((int)$data['journalBranchesForm_atWork']+(int)$data['journalBranchesForm_onHoliday']+(int)$data['journalBranchesForm_remoteTotal']+(int)$data['journalBranchesForm_onTwoWeekQuarantine']+
+			(int)$data['journalBranchesForm_onSickLeave']+(int)$data['journalBranchesForm_sickCOVID']+(int)$data['journalBranchesForm_ShiftRest'])
                     ->setAtWork((int)$data['journalBranchesForm_atWork'])
                     ->setOnHoliday((int)$data['journalBranchesForm_onHoliday'])
                     ->setRemoteTotal((int)$data['journalBranchesForm_remoteTotal'])
@@ -81,7 +83,7 @@ class AddDailyReportController extends AbstractController
 
                 $em->persist($reportBranch);
             }
-            if ($data['journalForm_total']==0 && $data['journalForm_total']==0 && $data['journalForm_atWork']==0 && $data['journalForm_onHoliday']==0 && $data['journalForm_remoteTotal']==0 
+            if ($data['journalForm_atWork']==0 && $data['journalForm_onHoliday']==0 && $data['journalForm_remoteTotal']==0 
 		&& $data['journalForm_remotePregnant']==0 && $data['journalForm_remoteWithChildren']==0 && $data['journalForm_remoteOver60']==0 && $data['journalForm_onTwoWeekQuarantine']==0
 		&& $data['journalForm_onSickLeave']==0 && $data['journalForm_sickCOVID']==0 && $data['journalForm_ShiftRest']==0) {
 		        return $this->render('daily_report/index.html.twig', [
@@ -91,7 +93,7 @@ class AddDailyReportController extends AbstractController
 		        ]);
 	    } 
             if ($organization->getBranches()) {
-	            if ($data['journalBranchesForm_total']==0 && $data['journalBranchesForm_total']==0 && $data['journalBranchesForm_atWork']==0 && $data['journalBranchesForm_onHoliday']==0 && $data['journalBranchesForm_remoteTotal']==0 
+	            if ($data['journalBranchesForm_atWork']==0 && $data['journalBranchesForm_onHoliday']==0 && $data['journalBranchesForm_remoteTotal']==0 
 			&& $data['journalBranchesForm_remotePregnant']==0 && $data['journalBranchesForm_remoteWithChildren']==0 && $data['journalBranchesForm_remoteOver60']==0 && $data['journalBranchesForm_onTwoWeekQuarantine']==0
 			&& $data['journalBranchesForm_onSickLeave']==0 && $data['journalBranchesForm_sickCOVID']==0 && $data['journalBranchesForm_ShiftRest']==0) {
 			        return $this->render('daily_report/index.html.twig', [

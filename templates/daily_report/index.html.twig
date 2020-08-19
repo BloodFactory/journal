@@ -61,20 +61,6 @@
                                         </div>
 
                                         <div class="uk-margin uk-flex">
-                                            {% set name = formName ~ '_total' %}
-                                            <label for="{{ name }}"
-                                                   class="uk-form-label uk-margin-right">Фактическая
-                                                численность</label>
-                                            <input type="number"
-                                                   min="0"
-                                                   id="{{ name }}"
-                                                   name="{{ name }}"
-                                                   class="uk-input"
-                                                   style="width: 100%"
-                                                   value="{{ report.total }}">
-                                        </div>
-
-                                        <div class="uk-margin uk-flex">
                                             {% set name = formName ~ '_atWork' %}
                                             <label for="{{ name }}"
                                                    class="uk-form-label uk-margin-right">На рабочем месте</label>

@@ -155,7 +155,7 @@ class DownloadExcelController extends AbstractController
         $sheet->setTitle('Таблица');
         $FIELDS = ["N пп", "Организация", "Количество работников", "", "", "", "", "", "", "", "", "", "", "Примечание"];
         $FIELDS1 = ["", "", "фактическая численность", "на рабочем месте", "в отпуске", "на дистанционной форме работы", "", "", "", "на 2-х недельном карантине", "на больничном", "заболевших(COVD-19)", "Выходной/ межвахтовый отдых", ""];
-        $FIELDS2 = ["", "", "", "", "", "1", "2", "3", "4", "", "", "", "", ""];
+        $FIELDS2 = ["", "", "", "", "", "Всего", "Беременные женщины", "Женщины с детьми до 14 лет", "Работники старше 60 лет", "", "", "", "", ""];
         $sheet->setCellValue('C1', "Ежедневный доклад оперативного дежурного Оперативного штаба Росморречфлота попредупреждению\nраспространения короновирусной инспекции(COVID-19)");
         $sheet->getStyle("A1:AA1")
               ->applyFromArray(['font' => ['bold' => true]]); // выделяем жирным до АА+номер строки
@@ -278,10 +278,27 @@ class DownloadExcelController extends AbstractController
         $sheet->setCellValue('K' . $count_sections, sprintf('=SUM(K6:K%s)', $prevRow));
         $sheet->setCellValue('L' . $count_sections, sprintf('=SUM(L6:L%s)', $prevRow));
         $sheet->setCellValue('M' . $count_sections, sprintf('=SUM(M6:M%s)', $prevRow));
-        $sheet->setCellValue('N' . $count_sections, sprintf('=SUM(N6:N%s)', $prevRow));
 
         $count_sections = $count_sections - 1;
         $sheet->getStyle("A3:N3")
+              ->applyFromArray([
+                                   'alignment' => [
+                                       'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                                       'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER
+                                   ]
+
+                               ]
+              );
+        $sheet->getStyle("C4:M4")
+              ->applyFromArray([
+                                   'alignment' => [
+                                       'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                                       'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER
+                                   ]
+
+                               ]
+              );
+        $sheet->getStyle("F5:I5")
               ->applyFromArray([
                                    'alignment' => [
                                        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
@@ -324,7 +341,7 @@ class DownloadExcelController extends AbstractController
                                    ]
                                ]);
         $count_sections++;
-        $sheet->getStyle("A$count_sections:N$count_sections")
+        $sheet->getStyle("B$count_sections:M$count_sections")
               ->applyFromArray([
                                    'borders' => [
                                        'allBorders' => [

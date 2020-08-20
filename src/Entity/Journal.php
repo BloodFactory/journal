@@ -107,6 +107,11 @@ class Journal
      */
     private $shift_rest;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $Die;
+
     public function __construct()
     {
         $this->branches = new ArrayCollection();
@@ -337,6 +342,18 @@ class Journal
     public function setShiftRest(?int $shift_rest): self
     {
         $this->shift_rest = $shift_rest;
+
+        return $this;
+    }
+
+    public function getDie(): ?int
+    {
+        return $this->Die;
+    }
+
+    public function setDie(?int $Die): self
+    {
+        $this->Die = $Die;
 
         return $this;
     }

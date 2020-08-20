@@ -153,10 +153,10 @@ class DownloadExcelController extends AbstractController
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Таблица');
-        $FIELDS = ["N пп", "Организация", "Количество работников", "", "", "", "", "", "", "", "", "", "", "Примечание"];
-        $FIELDS1 = ["", "", "фактическая численность", "на рабочем месте", "в отпуске", "на дистанционной форме работы", "", "", "", "на 2-х недельном карантине", "на больничном", "заболевших(COVD-19)", "Выходной/ межвахтовый отдых", ""];
-        $FIELDS2 = ["", "", "", "", "", "Всего", "Беременные женщины", "Женщины с детьми до 14 лет", "Работники старше 60 лет", "", "", "", "", ""];
-        $sheet->setCellValue('C1', "Ежедневный доклад оперативного дежурного Оперативного штаба Росморречфлота попредупреждению\nраспространения короновирусной инспекции(COVID-19)");
+        $FIELDS = ["N пп", "Организация", "Количество работников", "", "", "", "", "", "", "", "", "", "", "", "Примечание"];
+        $FIELDS1 = ["", "", "фактическая численность", "на рабочем месте", "в отпуске", "на дистанционной форме работы", "", "", "", "на 2-х недельном карантине", "на больничном", "заболевших(COVD-19)", "Выходной/ межвахтовый отдых", "Скончалось от COVID-19 (нарастающим итогом)", ""];
+        $FIELDS2 = ["", "", "", "", "", "Всего", "Беременные женщины", "Женщины с детьми до 14 лет", "Работники старше 60 лет", "", "", "", "", "", ""];
+        $sheet->setCellValue('C1', "Ежедневный доклад оперативного дежурного Оперативного штаба Росморречфлота попредупреждению\nраспространения короновирусной инфекции(COVID-19)");
         $sheet->getStyle("A1:AA1")
               ->applyFromArray(['font' => ['bold' => true]]); // выделяем жирным до АА+номер строки
         $sheet->setCellValue('C2', "по состоянию на {$date->format('d.m.Y')}");
@@ -184,8 +184,8 @@ class DownloadExcelController extends AbstractController
         $sheet->mergeCellsByColumnAndRow(3, 2, 12, 2); //объединение ячеек;
         $sheet->mergeCellsByColumnAndRow(1, 3, 1, 5); //объединение ячеек;
         $sheet->mergeCellsByColumnAndRow(2, 3, 2, 5); //объединение ячеек;
-        $sheet->mergeCellsByColumnAndRow(14, 3, 14, 5); //объединение ячеек;
-        $sheet->mergeCellsByColumnAndRow(3, 3, 13, 3); //объединение ячеек;
+        $sheet->mergeCellsByColumnAndRow(15, 3, 15, 5); //объединение ячеек;
+        $sheet->mergeCellsByColumnAndRow(3, 3, 14, 3); //объединение ячеек;
         $sheet->mergeCellsByColumnAndRow(6, 4, 9, 4); //объединение ячеек;
         $sheet->mergeCellsByColumnAndRow(3, 4, 3, 5); //объединение ячеек;
         $sheet->mergeCellsByColumnAndRow(4, 4, 4, 5); //объединение ячеек;
@@ -194,12 +194,13 @@ class DownloadExcelController extends AbstractController
         $sheet->mergeCellsByColumnAndRow(11, 4, 11, 5); //объединение ячеек;
         $sheet->mergeCellsByColumnAndRow(12, 4, 12, 5); //объединение ячеек;
         $sheet->mergeCellsByColumnAndRow(13, 4, 13, 5); //объединение ячеек;
+        $sheet->mergeCellsByColumnAndRow(14, 4, 14, 5); //объединение ячеек;
         $count_sections = 6; // разделы ---- >> N ROW!
         $wd = 12;
         $sheet->getColumnDimension('B')
-              ->setWidth(45); //ширина 1 столбца
+              ->setWidth(45); 
         $sheet->getColumnDimension('C')
-              ->setWidth($wd); //ширина 1 столбца
+              ->setWidth($wd); 
         $sheet->getColumnDimension('D')
               ->setWidth($wd);
         $sheet->getColumnDimension('E')
@@ -207,29 +208,31 @@ class DownloadExcelController extends AbstractController
         $sheet->getColumnDimension('F')
               ->setWidth($wd);
         $sheet->getColumnDimension('G')
-              ->setWidth($wd); //ширина 1 столбца
+              ->setWidth($wd); 
         $sheet->getColumnDimension('H')
-              ->setWidth($wd); //ширина 1 столбца
+              ->setWidth($wd); 
         $sheet->getColumnDimension('I')
-              ->setWidth($wd); //ширина 1 столбца
+              ->setWidth($wd); 
         $sheet->getColumnDimension('J')
-              ->setWidth($wd); //ширина 1 столбца
+              ->setWidth($wd); 
         $sheet->getColumnDimension('K')
-              ->setWidth($wd); //ширина 1 столбца
+              ->setWidth($wd); 
         $sheet->getColumnDimension('L')
-              ->setWidth($wd); //ширина 1 столбца
+              ->setWidth($wd); 
         $sheet->getColumnDimension('M')
-              ->setWidth($wd); //ширина 1 столбца
+              ->setWidth($wd); 
         $sheet->getColumnDimension('N')
-              ->setWidth(55); //ширина 1 столбца
+              ->setWidth($wd); 
+        $sheet->getColumnDimension('O')
+              ->setWidth(55); 
 
         foreach ($rez as $key => $val) {
-            $sheet->setCellValue('A' . $count_sections, $val['Org_Number']);//поставили, увеличили;
+            $sheet->setCellValue('A' . $count_sections, $val['Org_Number']);
             $sheet->setCellValue('B' . $count_sections, $val['Org_Name']);
             $sheet->getStyle("B$count_sections:B$count_sections")
                   ->getAlignment()
-                  ->setWrapText(true); //заголовки столбцов
-            $sheet->getStyle("N$count_sections:N$count_sections")
+                  ->setWrapText(true); 
+            $sheet->getStyle("O$count_sections:O$count_sections")
                   ->getAlignment()
                   ->setWrapText(true); //заголовки столбцов
             if (isset($val['Jornal'])) {
@@ -244,7 +247,8 @@ class DownloadExcelController extends AbstractController
                 $sheet->setCellValue('K' . $count_sections, $val['Jornal']->getOnSickLeave());
                 $sheet->setCellValue('L' . $count_sections, $val['Jornal']->getSickCOVID());
                 $sheet->setCellValue('M' . $count_sections, $val['Jornal']->getShiftRest());
-                $sheet->setCellValue('N' . $count_sections, $val['Jornal']->getNote());
+                $sheet->setCellValue('N' . $count_sections, $val['Jornal']->getDie());
+                $sheet->setCellValue('O' . $count_sections, $val['Jornal']->getNote());
             } else {
                 $sheet->setCellValue('C' . $count_sections, '-');
                 $sheet->setCellValue('D' . $count_sections, '-');
@@ -258,6 +262,7 @@ class DownloadExcelController extends AbstractController
                 $sheet->setCellValue('L' . $count_sections, '-');
                 $sheet->setCellValue('M' . $count_sections, '-');
                 $sheet->setCellValue('N' . $count_sections, '-');
+                $sheet->setCellValue('O' . $count_sections, '-');
             }
             $sheet->getRowDimension($count_sections)
                   ->setRowHeight(60);
@@ -266,7 +271,7 @@ class DownloadExcelController extends AbstractController
 
         $prevRow = $count_sections - 1;
 
-        $sheet->setCellValue('B' . $count_sections, 'ИТОГО');
+        $sheet->setCellValue('B' . $count_sections, 'Итого');
         $sheet->setCellValue('C' . $count_sections, sprintf('=SUM(C6:C%s)', $prevRow));
         $sheet->setCellValue('D' . $count_sections, sprintf('=SUM(D6:D%s)', $prevRow));
         $sheet->setCellValue('E' . $count_sections, sprintf('=SUM(E6:E%s)', $prevRow));
@@ -278,6 +283,7 @@ class DownloadExcelController extends AbstractController
         $sheet->setCellValue('K' . $count_sections, sprintf('=SUM(K6:K%s)', $prevRow));
         $sheet->setCellValue('L' . $count_sections, sprintf('=SUM(L6:L%s)', $prevRow));
         $sheet->setCellValue('M' . $count_sections, sprintf('=SUM(M6:M%s)', $prevRow));
+        $sheet->setCellValue('N' . $count_sections, sprintf('=SUM(N6:N%s)', $prevRow));
 
         $count_sections = $count_sections - 1;
         $sheet->getStyle("A3:N3")
@@ -289,7 +295,7 @@ class DownloadExcelController extends AbstractController
 
                                ]
               );
-        $sheet->getStyle("C4:M4")
+        $sheet->getStyle("C4:N4")
               ->applyFromArray([
                                    'alignment' => [
                                        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
@@ -315,7 +321,7 @@ class DownloadExcelController extends AbstractController
 
                                ]
               );
-        $sheet->getStyle("C6:N$count_sections")
+        $sheet->getStyle("C6:O$count_sections")
               ->applyFromArray([
                                    'alignment' => [
                                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER
@@ -331,7 +337,7 @@ class DownloadExcelController extends AbstractController
 
                                ]
               );
-        $sheet->getStyle("A3:N$count_sections")
+        $sheet->getStyle("A3:O$count_sections")
               ->applyFromArray([
                                    'borders' => [
                                        'allBorders' => [
@@ -341,7 +347,7 @@ class DownloadExcelController extends AbstractController
                                    ]
                                ]);
         $count_sections++;
-        $sheet->getStyle("B$count_sections:M$count_sections")
+        $sheet->getStyle("B$count_sections:N$count_sections")
               ->applyFromArray([
                                    'borders' => [
                                        'allBorders' => [
@@ -368,9 +374,9 @@ class DownloadExcelController extends AbstractController
             $count_sections++;
         }
         $sheet2->getColumnDimension('A')
-               ->setWidth(45); //ширина 1 столбца
+               ->setWidth(45); 
         $sheet2->getColumnDimension('B')
-               ->setWidth(145); //ширина 1 столбца
+               ->setWidth(145); 
         $sheet2->getStyle("A1:B$count_sections")
                ->applyFromArray([
                                     'borders' => [

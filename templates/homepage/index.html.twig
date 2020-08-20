@@ -18,13 +18,16 @@
         .branch {
             background-color: honeydew;
         }
+	div[sizetype="big"] {
+		min-width: 90%;
+	}
     </style>
 {% endblock %}
 
 {% block body %}
     <div class="uk-section uk-section-muted uk-section-small"
          uk-height-viewport>
-        <div class="uk-container uk-container-large">
+        <div class="uk-container uk-container-large" sizetype="big">
             <div class="uk-card uk-card-default uk-card-body uk-card-small"
                  uk-height-viewport="offset-top: true; offset-bottom: 40px">
                 <div class="uk-flex uk-flex-between">
@@ -82,8 +85,7 @@
                         {% if is_granted('ROLE_MORFLOT')  %}
         	                <th rowspan="3">Организация</th>
 	                {% endif %}
-                        <th rowspan="3">Дата</th>
-                        <th colspan="11" class="uk-text-center">Количество работников</th>
+                        <th colspan="12" class="uk-text-center">Количество работников</th>
                         <th rowspan="3">Примечание</th>
                         <th rowspan="3" style="width: 50px;"></th>
                     </tr>
@@ -96,6 +98,7 @@
                         <th rowspan="2">На больничном листе</th>
                         <th rowspan="2">Заболевших (COVID-19)</th>
                         <th rowspan="2">Выходной/<br>межвахтовый отдых</th>
+                        <th rowspan="2">Скончалось от COVID-19 (нарастающим итогом)</th>
                     </tr>
                     <tr>
                         <th>Всего</th>
@@ -121,7 +124,6 @@
 			        	        {% endif %}
 					</td>
 	        	        {% endif %}
-                                <td>{{ item.date|date('d.m.Y') }}</td>
                                 <td>{{ item.total }}</td>
                                 <td>{{ item.atWork }}</td>
                                 <td>{{ item.onHoliday }}</td>
@@ -133,6 +135,7 @@
                                 <td>{{ item.onSickLeave }}</td>
                                 <td>{{ item.sickCOVID }}</td>
                                 <td>{{ item.ShiftRest }}</td>
+                                <td>{{ item.Die }}</td>
                                 <td>{{ item.note }}</td>
                                 <td>
                                     <ul class="uk-iconnav">

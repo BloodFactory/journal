@@ -201,13 +201,26 @@
                                                    name="{{ name }}"
                                                    class="uk-input"
                                                    style="width: 100%"
-                                                   value="{{ report.sickCOVID }}">
+                                                   value="{{ report.ShiftRest }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_Die' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Скончалось от COVID-19 (нарастающим итогом)</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.Die }}">
                                         </div>
 
                                         <div class="uk-margin uk-flex">
                                             {% set name = formName ~ '_note' %}
                                             <label for="{{ name }}"
-                                                   class="uk-form-label uk-margin-right">Примечание</label>
+                                                   class="uk-form-label uk-margin-right">Примечание (информация о заболевших COVID-19 с указанием ФИО, должности, состояния здоровья / информация о заболевших COVID-19 обучающихся образовательных организаций  с указанием ФИО, курса, состояния здоровья / информация о скончавшихся от COVID-19 ФИО, должность, дата смерти)</label>
                                             <textarea id="{{ name }}"
                                                       name="{{ name }}"
                                                       class="uk-textarea"
@@ -390,9 +403,22 @@
                                         </div>
 
                                         <div class="uk-margin uk-flex">
+                                            {% set name = formName ~ '_Die' %}
+                                            <label for="{{ name }}"
+                                                   class="uk-form-label uk-margin-right">Скончалось от COVID-19 (нарастающим итогом)</label>
+                                            <input type="number"
+                                                   min="0"
+                                                   id="{{ name }}"
+                                                   name="{{ name }}"
+                                                   class="uk-input"
+                                                   style="width: 100%"
+                                                   value="{{ report.branches[0].Die }}">
+                                        </div>
+
+                                        <div class="uk-margin uk-flex">
                                             {% set name = formName ~ '_note' %}
                                             <label for="{{ name }}"
-                                                   class="uk-form-label uk-margin-right">Примечание</label>
+                                                   class="uk-form-label uk-margin-right">Примечание (информация о заболевших COVID-19 с указанием ФИО, должности, состояния здоровья / информация о заболевших COVID-19 обучающихся образовательных организаций  с указанием ФИО, курса, состояния здоровья / информация о скончавшихся от COVID-19 ФИО, должность, дата смерти)</label>
                                             <textarea id="{{ name }}"
                                                       name="{{ name }}"
                                                       class="uk-textarea"

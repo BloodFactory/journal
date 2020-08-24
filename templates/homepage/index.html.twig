@@ -84,10 +84,10 @@
                         <th rowspan="3" style="width: 20px;php"></th>
 
                         {% if is_granted('ROLE_MORFLOT') %}
-{#                            <th rowspan="3">Организация</th>#}
+                            <th rowspan="3">Организация</th>
                         {% endif %}
                         <th colspan="12" class="uk-text-center">Количество работников</th>
-{#                        <th rowspan="3">Примечание</th>#}
+                        <th rowspan="3">Примечание</th>
                         <th rowspan="3" style="width: 50px;"></th>
                     </tr>
                     <tr>
@@ -119,11 +119,11 @@
                                     {% endif %}
                                 </td>
                                 {% if is_granted('ROLE_MORFLOT') %}
-{#                                    <td>#}
-{#                                        {% if item.organization is not null %}#}
-{#                                            {{ item.organization.name }}#}
-{#                                        {% endif %}#}
-{#                                    </td>#}
+                                    <td>
+                                        {% if item.organization is not null %}
+                                            {{ item.organization.name }}
+                                        {% endif %}
+                                    </td>
                                 {% endif %}
                                 <td>{{ item.total }}</td>
                                 <td>{{ item.atWork }}</td>
@@ -137,7 +137,7 @@
                                 <td>{{ item.sickCOVID }}</td>
                                 <td>{{ item.ShiftRest }}</td>
                                 <td>{{ item.Die }}</td>
-{#                                <td>{{ item.note }}</td>#}
+                                <td>{{ item.note }}</td>
                                 <td>
                                     <ul class="uk-iconnav">
                                         {% if now < item.nextDay %}
@@ -160,10 +160,9 @@
                                 {% set item = item.branches[0] %}
                                 <tr class="branch" id="{{ id }}" hidden>
                                     <td></td>
-{#                                    {% if is_granted('ROLE_MORFLOT') %}#}
-{#                                        <td></td>#}
-{#                                    {% endif %}#}
-                                    <td>{{ item.date|date('d.m.Y') }}</td>
+                                    {% if is_granted('ROLE_MORFLOT') %}
+                                        <td></td>
+                                    {% endif %}
                                     <td>{{ item.total }}</td>
                                     <td>{{ item.atWork }}</td>
                                     <td>{{ item.onHoliday }}</td>
@@ -174,7 +173,9 @@
                                     <td>{{ item.onTwoWeekQuarantine }}</td>
                                     <td>{{ item.onSickLeave }}</td>
                                     <td>{{ item.sickCOVID }}</td>
-{#                                    <td>{{ item.note }}</td>#}
+	                            <td>{{ item.ShiftRest }}</td>
+	                            <td>{{ item.Die }}</td>
+                                    <td>{{ item.note }}</td>
                                     <td></td>
                                 </tr>
                             {% endif %}

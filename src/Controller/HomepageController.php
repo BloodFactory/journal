@@ -50,23 +50,21 @@ class HomepageController extends AbstractController
             $filters['organization'] = $organization;
         }
 
-        $journal = $this->getDoctrine()->getRepository(Journal::class)->findBy($filters, [
-            'date' => 'ASC'
-        ]);
+        $journal = $this->getDoctrine()
+                        ->getRepository(Journal::class)
+                        ->findBy($filters, [
+                            'date' => 'ASC'
+                        ]);
 
-        $request->getSession()->set(self::SESSION_KEY, $query->all());
+        $request->getSession()
+                ->set(self::SESSION_KEY, $query->all());
+
+        $now = new DateTime();
 
         return $this->render('homepage/index.html.twig', [
             'journal' => $journal,
-            'date' => $date
+            'date' => $date,
+            'now' => $now
         ]);
-    }
-
-    /**
-     * @Route("/logout", name="app_logout")
-     */
-    public function logout()
-    {
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 }

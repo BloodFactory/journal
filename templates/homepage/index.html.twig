@@ -18,9 +18,10 @@
         .branch {
             background-color: honeydew;
         }
-	div[sizetype="big"] {
-		min-width: 90%;
-	}
+
+        div[sizetype="big"] {
+            min-width: 90%;
+        }
     </style>
 {% endblock %}
 
@@ -38,13 +39,13 @@
                               uk-icon="plus"></span>
                             Добавить
                         </a>
-                        {% if is_granted('ROLE_MORFLOT')  %}
-                        <button class="uk-button uk-button-secondary" id="downloadJournal">
+                        {% if is_granted('ROLE_MORFLOT') %}
+                            <button class="uk-button uk-button-secondary" id="downloadJournal">
                             <span class="uk-margin-small-right"
                                   uk-icon="download"></span>
-                            Скачать (EXCEL)
-                        </button> 
-			{% endif  %}
+                                Скачать (EXCEL)
+                            </button>
+                        {% endif %}
                         <a href="{{ path('app_logout') }}"
                            class="uk-button uk-button-danger">
                             <span class="uk-margin-small-right" uk-icon="sign-out"></span>
@@ -79,14 +80,14 @@
                 <table class="uk-table uk-table-divider uk-table-striped">
                     <thead>
                     <tr>
-                      
-                            <th rowspan="3" style="width: 20px;php"></th>
-                      
-                        {% if is_granted('ROLE_MORFLOT')  %}
-        	                <th rowspan="3">Организация</th>
-	                {% endif %}
+
+                        <th rowspan="3" style="width: 20px;php"></th>
+
+                        {% if is_granted('ROLE_MORFLOT') %}
+{#                            <th rowspan="3">Организация</th>#}
+                        {% endif %}
                         <th colspan="12" class="uk-text-center">Количество работников</th>
-                        <th rowspan="3">Примечание</th>
+{#                        <th rowspan="3">Примечание</th>#}
                         <th rowspan="3" style="width: 50px;"></th>
                     </tr>
                     <tr>
@@ -112,18 +113,18 @@
                     {% if journal|length > 0 %}
                         {% for item in journal %}
                             <tr>
-                                    <td>
-	                                {% if item.organization.branches %}
-        	                               <span uk-toggle="target: #branch_{{ item.id }}" uk-icon="triangle-down"></span>
-	                                {% endif %}
-                                    </td>
-	                        {% if is_granted('ROLE_MORFLOT')  %}
-	                                <td>
-						{%  if item.organization is not null %}
-							{{ item.organization.name }}
-			        	        {% endif %}
-					</td>
-	        	        {% endif %}
+                                <td>
+                                    {% if item.organization.branches %}
+                                        <span uk-toggle="target: #branch_{{ item.id }}" uk-icon="triangle-down"></span>
+                                    {% endif %}
+                                </td>
+                                {% if is_granted('ROLE_MORFLOT') %}
+{#                                    <td>#}
+{#                                        {% if item.organization is not null %}#}
+{#                                            {{ item.organization.name }}#}
+{#                                        {% endif %}#}
+{#                                    </td>#}
+                                {% endif %}
                                 <td>{{ item.total }}</td>
                                 <td>{{ item.atWork }}</td>
                                 <td>{{ item.onHoliday }}</td>
@@ -136,18 +137,20 @@
                                 <td>{{ item.sickCOVID }}</td>
                                 <td>{{ item.ShiftRest }}</td>
                                 <td>{{ item.Die }}</td>
-                                <td>{{ item.note }}</td>
+{#                                <td>{{ item.note }}</td>#}
                                 <td>
                                     <ul class="uk-iconnav">
-					{% if app.user.organization.id == item.organization.id  %}
-                                        <li><a href="{{ path('edit_daily_report', {id: item.id}) }}"
-                                               uk-icon="icon: file-edit"
-                                               uk-tooltip="Редактировать"></a></li>
-                                        <li><a href="{{ path('delete_daily_report', {id: item.id}) }}"
-                                               class="delete_daily_report"
-                                               uk-icon="icon: trash"
-                                               uphpk-tooltip="Удалить"></a></li>
-					{% endif  %}
+                                        {% if now < item.nextDay %}
+                                            {% if app.user.organization.id == item.organization.id %}
+                                                <li><a href="{{ path('edit_daily_report', {id: item.id}) }}"
+                                                       uk-icon="icon: file-edit"
+                                                       uk-tooltip="Редактировать"></a></li>
+                                                <li><a href="{{ path('delete_daily_report', {id: item.id}) }}"
+                                                       class="delete_daily_report"
+                                                       uk-icon="icon: trash"
+                                                       uphpk-tooltip="Удалить"></a></li>
+                                            {% endif %}
+                                        {% endif %}
                                     </ul>
                                 </td>
                             </tr>
@@ -156,10 +159,10 @@
                                 {% set id = 'branch_' ~ item.id %}
                                 {% set item = item.branches[0] %}
                                 <tr class="branch" id="{{ id }}" hidden>
-	                                <td></td>
-	                	        {% if is_granted('ROLE_MORFLOT')  %}
-	                                <td></td>
-	        	       	        {% endif %}
+                                    <td></td>
+{#                                    {% if is_granted('ROLE_MORFLOT') %}#}
+{#                                        <td></td>#}
+{#                                    {% endif %}#}
                                     <td>{{ item.date|date('d.m.Y') }}</td>
                                     <td>{{ item.total }}</td>
                                     <td>{{ item.atWork }}</td>
@@ -171,14 +174,14 @@
                                     <td>{{ item.onTwoWeekQuarantine }}</td>
                                     <td>{{ item.onSickLeave }}</td>
                                     <td>{{ item.sickCOVID }}</td>
-                                    <td>{{ item.note }}</td>
+{#                                    <td>{{ item.note }}</td>#}
                                     <td></td>
                                 </tr>
                             {% endif %}
                         {% endfor %}
                     {% else %}
-                        <tr>            
-                            <td colspan="14" class="uk-text-center">Нет ни одной записи</td>
+                        <tr>
+                            <td colspan="15" class="uk-text-center">Нет ни одной записи</td>
                         </tr>
                     {% endif %}
                     </tbody>

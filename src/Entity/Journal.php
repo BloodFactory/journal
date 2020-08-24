@@ -3,11 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\JournalRepository;
+use DateInterval;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 
 /**
  * @ORM\Entity(repositoryClass=JournalRepository::class)
@@ -358,4 +360,16 @@ class Journal
         return $this;
     }
 
+    /**
+     * @return DateTimeInterface
+     * @throws Exception
+     */
+    public function nextDay(): DateTimeInterface
+    {
+        $date = clone $this->date;
+        $date = $date->add(new DateInterval('P1D'));
+        $date->setTime(8, 30, 0);
+
+        return $date;
+    }
 }

@@ -51,7 +51,7 @@ class JournalExcel
                             ->setParameter('date', $date)
                             ->andWhere('j.isActive = 1')
                             ->andWhere('j.organization IS NOT NULL')
-                            ->addOrderBy('o.order.', 'ASC')
+                            ->addOrderBy('o.sort', 'ASC')
                             ->getQuery()
                             ->getResult();
         $journal1 = $this->em->getRepository(Journal::class)
@@ -64,7 +64,8 @@ class JournalExcel
                              ->getResult();
         $org = $this->em->getRepository(Organization::class)
                         ->createQueryBuilder('o')
-                        ->addOrderBy('o.id', 'ASC')
+                        ->addOrderBy('o.sort', 'ASC')
+                        ->andWhere('o.isActive = 1')
                         ->getQuery()
                         ->getResult();
         $rez = [];

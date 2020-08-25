@@ -156,7 +156,6 @@ class JournalExcel
               ->setWrapText(true);
         $sheet->mergeCellsByColumnAndRow(1, 1, 15, 1); //объединение ячеек;
         $sheet->mergeCellsByColumnAndRow(1, 2, 15, 2); //объединение ячеек;
-        $sheet->mergeCellsByColumnAndRow(3, 2, 12, 2); //объединение ячеек;
         $sheet->mergeCellsByColumnAndRow(1, 3, 1, 5); //объединение ячеек;
         $sheet->mergeCellsByColumnAndRow(2, 3, 2, 5); //объединение ячеек;
         $sheet->mergeCellsByColumnAndRow(15, 3, 15, 5); //объединение ячеек;

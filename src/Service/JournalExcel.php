@@ -99,15 +99,40 @@ class JournalExcel
         }
 
         $spreadsheet = new Spreadsheet();
+        $spreadsheet->getDefaultStyle()
+                    ->getFont()
+                    ->setName('Times New Roman')
+                    ->setSize(12);
+
+        $spreadsheet->getDefaultStyle()
+                    ->getAlignment()
+                    ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+                    ->setVertical(Alignment::VERTICAL_CENTER);
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Таблица');
+
+        $sheet->getColumnDimension('A')->setWidth(8.46);
+        $sheet->getColumnDimension('B')->setWidth(34.92);
+        $sheet->getColumnDimension('C')->setWidth(8.04);
+        $sheet->getColumnDimension('D')->setWidth(8.72);
+        $sheet->getColumnDimension('E')->setWidth(8.04);
+        $sheet->getColumnDimension('F')->setWidth(8.04);
+        $sheet->getColumnDimension('G')->setWidth(8.04);
+        $sheet->getColumnDimension('H')->setWidth(8.04);
+        $sheet->getColumnDimension('I')->setWidth(8.04);
+        $sheet->getColumnDimension('J')->setWidth(8.04);
+        $sheet->getColumnDimension('K')->setWidth(8.04);
+        $sheet->getColumnDimension('L')->setWidth(8.04);
+        $sheet->getColumnDimension('M')->setWidth(8.04);
+        $sheet->getColumnDimension('N')->setWidth(8.04);
+        $sheet->getColumnDimension('O')->setWidth(44.06);
+
         $FIELDS = ["N пп", "Организация", "Количество работников", "", "", "", "", "", "", "", "", "", "", "", "Примечание"];
         $FIELDS1 = ["", "", "фактическая численность", "на рабочем месте", "в отпуске", "на дистанционной форме работы", "", "", "", "на 2-х недельном карантине", "на больничном", "заболевших(COVD-19)", "Выходной/ межвахтовый отдых", "Скончалось от COVID-19 (нарастающим итогом)", ""];
         $FIELDS2 = ["", "", "", "", "", "Всего", "Беременные женщины", "Женщины с детьми до 14 лет", "Работники старше 60 лет", "", "", "", "", "", ""];
-        $sheet->setCellValue('C1', "Ежедневный доклад оперативного дежурного Оперативного штаба Росморречфлота по предупреждению распространения коронавирусной инфекции(COVID-19)");
-        $sheet->getStyle("A1:AA1")
-              ->applyFromArray(['font' => ['bold' => true]]); // выделяем жирным до АА+номер строки
-        $sheet->setCellValue('C2', "по состоянию на {$date->format('d.m.Y')}");
+        $sheet->setCellValue('A1', "Ежедневный доклад оперативного дежурного Оперативного штаба Росморречфлота по предупреждению распространения коронавирусной инфекции(COVID-19)");
+        $sheet->getStyle("A1:AA1")->applyFromArray(['font' => ['bold' => true]]); // выделяем жирным до АА+номер строки
+        $sheet->setCellValue('A2', "по состоянию на {$date->format('d.m.Y')}");
         $count_sections = 3; // разделы ---- >> N ROW!
         $sheet->fromArray($FIELDS, NULL, "A$count_sections");//заголовки столбцов
         $sheet->getStyle("A$count_sections:AA$count_sections")
@@ -129,6 +154,8 @@ class JournalExcel
         $sheet->getStyle("A$count_sections:AA$count_sections")
               ->getAlignment()
               ->setWrapText(true);
+        $sheet->mergeCellsByColumnAndRow(1, 1, 15, 1); //объединение ячеек;
+        $sheet->mergeCellsByColumnAndRow(1, 2, 15, 2); //объединение ячеек;
         $sheet->mergeCellsByColumnAndRow(3, 2, 12, 2); //объединение ячеек;
         $sheet->mergeCellsByColumnAndRow(1, 3, 1, 5); //объединение ячеек;
         $sheet->mergeCellsByColumnAndRow(2, 3, 2, 5); //объединение ячеек;
@@ -144,35 +171,6 @@ class JournalExcel
         $sheet->mergeCellsByColumnAndRow(13, 4, 13, 5); //объединение ячеек;
         $sheet->mergeCellsByColumnAndRow(14, 4, 14, 5); //объединение ячеек;
         $count_sections = 6; // разделы ---- >> N ROW!
-        $wd = 12;
-        $sheet->getColumnDimension('B')
-              ->setWidth(45);
-        $sheet->getColumnDimension('C')
-              ->setWidth($wd);
-        $sheet->getColumnDimension('D')
-              ->setWidth($wd);
-        $sheet->getColumnDimension('E')
-              ->setWidth($wd);
-        $sheet->getColumnDimension('F')
-              ->setWidth($wd);
-        $sheet->getColumnDimension('G')
-              ->setWidth($wd);
-        $sheet->getColumnDimension('H')
-              ->setWidth($wd);
-        $sheet->getColumnDimension('I')
-              ->setWidth($wd);
-        $sheet->getColumnDimension('J')
-              ->setWidth($wd);
-        $sheet->getColumnDimension('K')
-              ->setWidth($wd);
-        $sheet->getColumnDimension('L')
-              ->setWidth($wd);
-        $sheet->getColumnDimension('M')
-              ->setWidth($wd);
-        $sheet->getColumnDimension('N')
-              ->setWidth($wd);
-        $sheet->getColumnDimension('O')
-              ->setWidth(55);
 
         foreach ($rez as $key => $val) {
             $sheet->setCellValue('A' . $count_sections, $val['Org_Number']);
@@ -294,6 +292,12 @@ class JournalExcel
                                        ]
                                    ]
                                ]);
+        $sheet->getStyle("O6:O$count_sections")
+              ->getFont()
+              ->setSize(10);
+        $sheet->getRowDimension(4)->setRowHeight(30);
+        $sheet->getRowDimension(5)->setRowHeight(64.90);
+
         $count_sections++;
         $sheet->getStyle("B$count_sections:N$count_sections")
               ->applyFromArray([

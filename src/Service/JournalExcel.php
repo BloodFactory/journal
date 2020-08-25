@@ -46,11 +46,12 @@ class JournalExcel
 
         $journal = $this->em->getRepository(Journal::class)
                             ->createQueryBuilder('j')
+                            ->leftJoin('j.organization', 'o')
                             ->andWhere('j.date = :date')
                             ->setParameter('date', $date)
                             ->andWhere('j.isActive = 1')
                             ->andWhere('j.organization IS NOT NULL')
-                            ->addOrderBy('j.organization', 'ASC')
+                            ->addOrderBy('o.order.', 'ASC')
                             ->getQuery()
                             ->getResult();
         $journal1 = $this->em->getRepository(Journal::class)

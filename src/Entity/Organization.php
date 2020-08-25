@@ -43,7 +43,17 @@ class Organization
     /**
      * @ORM\Column(type="string", length=7000, nullable=true)
      */
-    private $Contact;
+    private ?string $Contact;
+
+    /**
+     * @ORM\Column(type="integer", options={"default" : 0}, nullable=true)
+     */
+    private ?int $sort;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private ?bool $isActive = true;
 
     public function __construct()
     {
@@ -135,6 +145,30 @@ class Organization
     public function setContact(?string $Contact): self
     {
         $this->Contact = $Contact;
+
+        return $this;
+    }
+
+    public function getSort(): ?int
+    {
+        return $this->sort;
+    }
+
+    public function setSort(int $sort): self
+    {
+        $this->sort = $sort;
+
+        return $this;
+    }
+
+    public function getIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(?bool $isActive): self
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }

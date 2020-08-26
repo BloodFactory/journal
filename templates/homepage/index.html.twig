@@ -109,7 +109,7 @@
 
                     <tbody>
                     {% if journal|length > 0 %}
-                        {% for item in journal %}
+                        {% for item in journal %}                           
                             <tr>
                                 <td>
                                     {% if item.organization.branches %}
@@ -155,12 +155,13 @@
 
                             {% if item.organization.branches %}
                                 {% set id = 'branch_' ~ item.id %}
+                                {% set parent = item %}
                                 {% set item = item.branches[0] %}
                                 <tr class="branch" id="{{ id }}" hidden>
                                     <td></td>
                                     {% if is_granted('ROLE_MORFLOT') %}
                                         <td>
-                                            Филиалы {{ item.organization.name }}
+                                            Филиалы {{ parent.organization.name }}
                                         </td>
                                     {% endif %}
                                     <td>{{ item.total }}</td>

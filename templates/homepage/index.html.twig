@@ -22,12 +22,37 @@
         div[sizetype="big"] {
             min-width: 90%;
         }
+
+        header {
+            background: linear-gradient(to left, #28a5f5, #1e87f0);
+        }
+
+        .activeSticky {
+            box-shadow:0 5px 8px 2px rgba(0, 0, 0, 0.3);
+        }
     </style>
 {% endblock %}
 
 {% block body %}
+    <header uk-sticky="cls-active: activeSticky; animation: uk-animation-slide-top; top: 80;">
+        <nav class="uk-navbar uk-navbar-transparent uk-container uk-container-large" uk-navbar>
+            <div class="uk-navbar-left">
+                <span class="uk-navbar-item uk-logo" style="color: #fff">{{ app.user.organization.name }}</span>
+            </div>
+
+            <div class="uk-navbar-right">
+                <a href="{{ path('app_logout') }}"
+                   class="uk-button uk-button-danger">
+                    <span class="uk-margin-small-right" uk-icon="sign-out"></span>
+                    Выход
+                </a>
+            </div>
+        </nav>
+    </header>
+
+
     <div class="uk-section uk-section-muted uk-section-small"
-         uk-height-viewport>
+         uk-height-viewport="offset-top: 80;">
         <div class="uk-container uk-container-large" sizetype="big">
             <div class="uk-card uk-card-default uk-card-body uk-card-small"
                  uk-height-viewport="offset-top: true; offset-bottom: 40px">
@@ -46,11 +71,6 @@
                                 Скачать (EXCEL)
                             </button>
                         {% endif %}
-                        <a href="{{ path('app_logout') }}"
-                           class="uk-button uk-button-danger">
-                            <span class="uk-margin-small-right" uk-icon="sign-out"></span>
-                            Выход
-                        </a>
                     </div>
 
                     <div class="uk-display-inline-block uk-margin-left">
@@ -109,7 +129,7 @@
 
                     <tbody>
                     {% if journal|length > 0 %}
-                        {% for item in journal %}                           
+                        {% for item in journal %}
                             <tr>
                                 <td>
                                     {% if item.organization.branches %}

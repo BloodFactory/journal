@@ -308,6 +308,8 @@ class JournalExcel
                                    ]
                                ]);
 
+        $sheet->freezePaneByColumnAndRow(0,6);
+
         $sheet2 = $spreadsheet->createSheet();
         $sheet2->setTitle('Контакты');
         $count_sections = 1;

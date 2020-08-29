@@ -35,18 +35,21 @@
 
 {% block body %}
     <header uk-sticky="cls-active: activeSticky; animation: uk-animation-slide-top; top: 80;">
-        <nav class="uk-navbar uk-navbar-transparent uk-container uk-container-large" uk-navbar>
-            <div class="uk-navbar-left">
-                <span class="uk-navbar-item uk-logo" style="color: #fff">{{ app.user.organization.name }}</span>
-            </div>
+        <nav class="uk-navbar uk-navbar-transparent" uk-navbar>
+            <div class="uk-container uk-container-large uk-flex" sizetype="big">
+                <div class="uk-navbar-left">
+                    <span class="uk-navbar-item uk-logo" style="color: #fff">{{ app.user.organization.name }}</span>
+                </div>
 
-            <div class="uk-navbar-right">
-                <a href="{{ path('app_logout') }}"
-                   class="uk-button uk-button-danger">
-                    <span class="uk-margin-small-right" uk-icon="sign-out"></span>
-                    Выход
-                </a>
+                <div class="uk-navbar-right">
+                    <a href="{{ path('app_logout') }}"
+                    class="uk-button uk-button-danger">
+                        <span class="uk-margin-small-right" uk-icon="sign-out"></span>
+                        Выход
+                    </a>
+                </div>
             </div>
+            
         </nav>
     </header>
 

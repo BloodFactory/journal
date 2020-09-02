@@ -53,7 +53,7 @@ class AddDailyReportController extends AbstractController
                 ->setOrganization($organization)
                 ->setDate($date)
                 ->setTotal((int)$data['journalForm_atWork']+(int)$data['journalForm_onHoliday']+(int)$data['journalForm_remoteTotal']+(int)$data['journalForm_onTwoWeekQuarantine']+
-			(int)$data['journalForm_onSickLeave']+(int)$data['journalForm_sickCOVID']+(int)$data['journalForm_ShiftRest'])
+			(int)$data['journalForm_onSickLeave']+(int)$data['journalForm_ShiftRest'])
                 ->setAtWork((int)$data['journalForm_atWork'])
                 ->setOnHoliday((int)$data['journalForm_onHoliday'])
                 ->setRemoteTotal((int)$data['journalForm_remoteTotal'])
@@ -73,7 +73,7 @@ class AddDailyReportController extends AbstractController
                 $reportBranch
                     ->setDate($date)
                 ->setTotal((int)$data['journalBranchesForm_atWork']+(int)$data['journalBranchesForm_onHoliday']+(int)$data['journalBranchesForm_remoteTotal']+(int)$data['journalBranchesForm_onTwoWeekQuarantine']+
-			(int)$data['journalBranchesForm_onSickLeave']+(int)$data['journalBranchesForm_sickCOVID']+(int)$data['journalBranchesForm_ShiftRest'])
+			(int)$data['journalBranchesForm_onSickLeave']+(int)$data['journalBranchesForm_ShiftRest'])
                     ->setAtWork((int)$data['journalBranchesForm_atWork'])
                     ->setOnHoliday((int)$data['journalBranchesForm_onHoliday'])
                     ->setRemoteTotal((int)$data['journalBranchesForm_remoteTotal'])

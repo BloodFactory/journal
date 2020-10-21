@@ -80,7 +80,7 @@ class Journal
     private ?int $sickCOVID = 0;
 
     /**
-     * @ORM\Column(type="string", length=4000, nullable=true)
+     * @ORM\Column(type="string", length=15000, nullable=true)
      */
     private ?string $note = '';
 

@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200825072055 extends AbstractMigration
+final class Version20201016171434 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -20,9 +20,10 @@ final class Version20200825072055 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE organization ADD sort INT');
-        $this->addSql('ALTER TABLE organization ADD CONSTRAINT DF_C1EE637C_5124F222 DEFAULT 0 FOR sort');
+        $this->addSql('ALTER TABLE journal ALTER COLUMN note VARCHAR(MAX)');
         $this->addSql('ALTER TABLE organization ALTER COLUMN contact VARCHAR(MAX)');
+        $this->addSql('ALTER TABLE organization ALTER COLUMN sort INT');
+        $this->addSql('ALTER TABLE organization ALTER COLUMN is_active BIT');
     }
 
     public function down(Schema $schema) : void
@@ -38,7 +39,10 @@ final class Version20200825072055 extends AbstractMigration
         $this->addSql('CREATE SCHEMA db_owner');
         $this->addSql('CREATE SCHEMA db_securityadmin');
         $this->addSql('CREATE SCHEMA dbo');
-        $this->addSql('ALTER TABLE organization DROP COLUMN sort');
+        $this->addSql('ALTER TABLE journal ALTER COLUMN note NVARCHAR(4000) COLLATE Cyrillic_General_CI_AS');
         $this->addSql('ALTER TABLE organization ALTER COLUMN contact VARCHAR(MAX) COLLATE Cyrillic_General_CI_AS');
+        $this->addSql('ALTER TABLE organization ALTER COLUMN sort INT NOT NULL');
+        $this->addSql('ALTER TABLE organization ALTER COLUMN is_active BIT NOT NULL');
+        $this->addSql('ALTER TABLE organization ADD CONSTRAINT DF_C1EE637C_1B5771DD DEFAULT \'1\' FOR is_active');
     }
 }

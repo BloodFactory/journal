@@ -32,41 +32,38 @@ class SaveExcelCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
-
-        $date = $input->getArgument('date');
-        $folder = $input->getArgument('folder');
-
         try {
+	        $io = new SymfonyStyle($input, $output);
+
+	        $date = $input->getArgument('date');
+        	$folder = $input->getArgument('folder');
+
             $date = new \DateTime($date);
-        } catch (\Exception $e) {
-            $io->error('Неверный формат даты');
+
+	        $filters = [
+        	    'date' => $date,
+	            'isActive' => true,
+        	    'headOffice' => null
+	        ];
+
+        	$y = $date->format('d.m.Y');
+	        $s = "Доклад ОШ $y.xlsx";
+
+	        $filename = $folder . $s;
+
+	        $io->title('Сохранение EXCEL файла');
+	        $io->block('Путь файла: ' . $filename);
+
+        	$this->je->save($date, $filename);
+
+	        $io->success('Файл успешно сохранен');
+
+	        return 0;
+        } catch (\Throwable $e) {
+     	    file_put_contents('C:\BackUp\#php.log', print_r('Ошибка ExcelCovid'.$e->getMessage(),true),FILE_APPEND | LOCK_EX); 
+            $io->error('Ошибка: ' . $e->getMessage());
             return 1;
         }
 
-        $filters = [
-            'date' => $date,
-            'isActive' => true,
-            'headOffice' => null
-        ];
-
-        $y = $date->format('d.m.Y');
-        $s = "Доклад ОШ $y.xlsx";
-
-        $filename = $folder . $s;
-
-        $io->title('Сохранение EXCEL файла');
-        $io->block('Путь файла: ' . $filename);
-
-        try {
-            $this->je->save($date, $filename);
-        } catch (\Exception $e) {
-            $io->error('Не удалось создать файл. Ошибка: ' . $e->getMessage());
-            return 1;
-        }
-
-        $io->success('Файл успешно сохранен');
-
-        return 0;
     }
 }

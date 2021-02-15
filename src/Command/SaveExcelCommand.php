@@ -60,7 +60,9 @@ class SaveExcelCommand extends Command
 
 	        return 0;
         } catch (\Throwable $e) {
-     	    file_put_contents('C:\BackUp\#php.log', print_r('Ошибка ExcelCovid'.$e->getMessage(),true),FILE_APPEND | LOCK_EX); 
+            $d = new DateTime();
+            file_put_contents('C:\BackUp\#php.log', "\r\n\r\n\r\n");
+     	    file_put_contents('C:\BackUp\#php.log', print_r('Ошибка ExcelCovid' . $d->format('d.m.Y H:i:s') . 'mess: ' . $e->getMessage() . 'Trace: ' . $e->getTraceAsString(),true), FILE_APPEND); 
             $io->error('Ошибка: ' . $e->getMessage());
             return 1;
         }

@@ -61,7 +61,7 @@
                  uk-height-viewport="offset-top: true; offset-bottom: 40px">
                 <div class="uk-flex uk-flex-between">
                     <div>
-                        <a href="{{ path('add_daily_report') }}"
+                        <a href="{{ path('daily_report') }}"
                            class="uk-button uk-button-primary">
                         <span class="uk-margin-small-right"
                               uk-icon="plus"></span>
@@ -109,24 +109,24 @@
                         {% endif %}
                         <th colspan="12" class="uk-text-center" style="padding: 7px">Количество работников</th>
                         <th rowspan="3" style="padding: 7px">Примечание</th>
-                        <th rowspan="3" style="min-width: 50px; padding: 7px"></th>
+                        <th rowspan="3" style="min-width: 60px; padding: 7px"></th>
                     </tr>
                     <tr>
-                        <th rowspan="2" style="padding: 7px">Фактическая численность</th>
-                        <th rowspan="2" style="padding: 7px">На рабочем месте</th>
+                        <th rowspan="2" style="padding: 7px; width: 80px;">Фактическая численность</th>
+                        <th rowspan="2" style="padding: 7px; width: 50px;">На рабочем месте</th>
                         <th rowspan="2" style="padding: 7px">В отпуске</th>
                         <th colspan="4" style="padding: 7px">На дистанционной форме работы</th>
-                        <th rowspan="2" style="padding: 7px">На 2х недельном карантине</th>
-                        <th rowspan="2" style="padding: 7px">На больничном листе</th>
-                        <th rowspan="2" style="padding: 7px">Заболевших (COVID-19)</th>
-                        <th rowspan="2" style="padding: 7px">Выходной/<br>межвахтовый отдых</th>
-                        <th rowspan="2" style="padding: 7px">Скончалось от COVID-19 (нарастающим итогом)</th>
+                        <th rowspan="2" style="padding: 7px; width: 70px;">На 2х недельном карантине</th>
+                        <th rowspan="2" style="padding: 7px; width: 75px;">На больничном листе</th>
+                        <th rowspan="2" style="padding: 7px; width: 70px">Заболевших (COVID-19)</th>
+                        <th rowspan="2" style="padding: 7px; width: 80px;">Выходной/<br>межвахтовый отдых</th>
+                        <th rowspan="2" style="padding: 7px; width: 85px;">Скончалось от <span style="white-space: nowrap">COVID-19</span> (нарастающим итогом)</th>
                     </tr>
                     <tr>
                         <th style="padding: 7px">Всего</th>
-                        <th style="padding: 7px">Беременные женщины</th>
-                        <th style="padding: 7px">Женщины с детьми до 14 лет</th>
-                        <th style="padding: 7px">Работники старше 60 лет</th>
+                        <th style="padding: 7px; width: 60px;">Беременные женщины</th>
+                        <th style="padding: 7px; width: 85px;">Женщины с детьми до 14 лет</th>
+                        <th style="padding: 7px; width: 80px;">Работники старше 60 лет</th>
                     </tr>
                     </thead>
 
@@ -163,13 +163,14 @@
                                     <ul class="uk-iconnav">
                                         {% if now < item.nextDay %}
                                             {% if app.user.organization.id == item.organization.id %}
-                                                <li><a href="{{ path('edit_daily_report', {id: item.id}) }}"
+                                                <li><a href="{{ path('daily_report', {id: item.id}) }}"
+                                                       class="uk-text-primary"
                                                        uk-icon="icon: file-edit"
                                                        uk-tooltip="Редактировать"></a></li>
                                                 <li><a href="{{ path('delete_daily_report', {id: item.id}) }}"
-                                                       class="delete_daily_report"
+                                                       class="delete_daily_report uk-text-danger"
                                                        uk-icon="icon: trash"
-                                                       uphpk-tooltip="Удалить"></a></li>
+                                                       uk-tooltip="Удалить"></a></li>
                                             {% endif %}
                                         {% endif %}
                                     </ul>

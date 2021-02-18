@@ -402,7 +402,7 @@ class JournalExcel
         $color = 'default';
         if (isset($val['JornalPrev']) && call_user_func([$val['Jornal'], $method]) !== call_user_func([$val['JornalPrev'], $method])) {
             $diff = call_user_func([$val['Jornal'], $method]) - call_user_func([$val['JornalPrev'], $method]);
-            $txt .= ' (' . ($diff > 0 ? '+' : '-') . $diff . ')';
+            $txt .= ' (' . ($diff > 0 ? '+' : '') . $diff . ')';
             switch (true) {
                 case (abs($diff) <= 5):
                     $color = 'f0ffa7';

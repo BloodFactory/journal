@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Entity\Journal;
 use App\Service\JournalExcel;
-use Doctrine\ORM\EntityManagerInterface;
+use DateTimeImmutable;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Throwable;
 
 class SaveExcelCommand extends Command
 {
@@ -33,36 +33,39 @@ class SaveExcelCommand extends Command
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
-	        $io = new SymfonyStyle($input, $output);
+            $io = new SymfonyStyle($input, $output);
 
-	        $date = $input->getArgument('date');
-        	$folder = $input->getArgument('folder');
+            $date = $input->getArgument('date');
+            $folder = $input->getArgument('folder');
 
-            $date = new \DateTime($date);
+            $date = new DateTimeImmutable($date);
 
-	        $filters = [
-        	    'date' => $date,
-	            'isActive' => true,
-        	    'headOffice' => null
-	        ];
+            $filters = [
+                'date' => $date,
+                'isActive' => true,
+                'headOffice' => null
+            ];
 
-        	$y = $date->format('d.m.Y');
-	        $s = "Доклад ОШ $y.xlsx";
+            $y = $date->format('d.m.Y');
+            $s = "Доклад ОШ $y.xlsx";
+            $s1 = "Доклад ОШ ${y}_.xlsx";
 
-	        $filename = $folder . $s;
+            $filename = $folder . $s;
+            $filename1 = $folder . $s1;
 
-	        $io->title('Сохранение EXCEL файла');
-	        $io->block('Путь файла: ' . $filename);
+            $io->title('Сохранение EXCEL файлов');
+            $io->block('Путь файла: ' . $filename);
 
-        	$this->je->save($date, $filename);
+            $this->je->save($date, $filename);
+            $this->je->save($date, $filename1, null, true);
 
-	        $io->success('Файл успешно сохранен');
+            $io->success('Файлы успешно сохранены');
 
-	        return 0;
-        } catch (\Throwable $e) {
-            $d = new DateTime();
+            return 0;
+        } catch (Throwable $e) {
+            $d = new DateTimeImmutable();
             file_put_contents('C:\BackUp\#php.log', "\r\n\r\n\r\n");
-     	    file_put_contents('C:\BackUp\#php.log', print_r('Ошибка ExcelCovid' . $d->format('d.m.Y H:i:s') . 'mess: ' . $e->getMessage() . 'Trace: ' . $e->getTraceAsString(),true), FILE_APPEND); 
+            file_put_contents('C:\BackUp\#php.log', print_r('Ошибка ExcelCovid' . $d->format('d.m.Y H:i:s') . 'mess: ' . $e->getMessage() . 'Trace: ' . $e->getTraceAsString(), true), FILE_APPEND);
             $io->error('Ошибка: ' . $e->getMessage());
             return 1;
         }

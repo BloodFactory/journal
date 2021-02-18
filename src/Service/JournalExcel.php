@@ -6,11 +6,13 @@ namespace App\Service;
 use App\Entity\Journal;
 use App\Entity\Organization;
 use App\Entity\User;
-use DateTimeInterface;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Exception;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\Security\Core\Security;
@@ -27,47 +29,31 @@ class JournalExcel
     }
 
     /**
-     * @param DateTimeInterface $date
+     * @param DateTimeImmutable $date
      * @param string $filename
      * @param User|null $user
+     * @param bool $control
      * @throws Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    public function save(DateTimeInterface $date, string $filename, ?User $user = null): void
+    public function save(DateTimeImmutable $date, string $filename, ?User $user = null, bool $control = false): void
     {
-        $filters = [
-            'date' => $date,
-            'isActive' => true
-        ];
+        $prevDate = $date->sub(new \DateInterval('P1D'));
 
-        if (null !== $user && !$this->security->isGranted('ROLE_MORFLOT')) {
-            $organization = $user->getOrganization();
-            $filters['organization'] = $organization;
-        }
-
-        $journal = $this->em->getRepository(Journal::class)
-                            ->createQueryBuilder('j')
-                            ->leftJoin('j.organization', 'o')
-                            ->andWhere('j.date = :date')
-                            ->setParameter('date', $date)
-                            ->andWhere('j.isActive = 1')
-                            ->andWhere('j.organization IS NOT NULL')
-                            ->addOrderBy('o.sort', 'ASC')
-                            ->getQuery()
-                            ->getResult();
-        $journal1 = $this->em->getRepository(Journal::class)
-                             ->createQueryBuilder('j')
-                             ->andWhere('j.date = :date')
-                             ->setParameter('date', $date)
-                             ->andWhere('j.isActive = 1')
-                             ->andWhere('j.organization IS NULL')
-                             ->getQuery()
-                             ->getResult();
+        $journal = $this->getJournal($date, true);
+        $journal1 = $this->getJournal($date);
         $org = $this->em->getRepository(Organization::class)
                         ->createQueryBuilder('o')
                         ->addOrderBy('o.sort', 'ASC')
                         ->andWhere('o.isActive = 1')
                         ->getQuery()
                         ->getResult();
+
+        if ($control) {
+            $journalPrev = $this->getJournal($prevDate, true);
+            $journal1Prev = $this->getJournal($prevDate);
+        }
+
         $rez = [];
         $j = 0;
         $i = 1;
@@ -75,22 +61,45 @@ class JournalExcel
             $rez[$j]['Org_Id'] = $val->getId();
             $rez[$j]['Org_Name'] = $val->getName();
             $rez[$j]['Org_Number'] = (string)$i;
+
             foreach ($journal as $key1 => $val1) {
-                if ($val1->getOrganization()
-                         ->getId() == $val->getId()) {
+                if ($val1->getOrganization()->getId() === $val->getId()) {
                     $rez[$j]['Jornal'] = $val1;
+                    unset($journal[$key1]);
+                    break;
                 }
             }
+
+            if ($control) {
+                foreach ($journalPrev as $key1 => $val1) {
+                    if ($val1->getOrganization()->getId() === $val->getId()) {
+                        $rez[$j]['JornalPrev'] = $val1;
+                        unset($journalPrev[$key1]);
+                        break;
+                    }
+                }
+            }
+
             if ($val->getBranches()) {
                 $j++;
                 $rez[$j]['Org_Id'] = $val->getId();
                 $rez[$j]['Org_Name'] = 'Филиалы ' . $val->getName();
                 $rez[$j]['Org_Number'] = (string)$i . '.1';
                 foreach ($journal1 as $key1 => $val1) {
-                    if ($val1->getHeadOffice()
-                             ->getOrganization()
-                             ->getId() == $val->getId()) {
+                    if ($val1->getHeadOffice()->getOrganization()->getId() == $val->getId()) {
                         $rez[$j]['Jornal'] = $val1;
+                        unset($journal1[$key1]);
+                        break;
+                    }
+                }
+
+                if ($control) {
+                    foreach ($journal1Prev as $key1 => $val1) {
+                        if ($val1->getHeadOffice()->getOrganization()->getId() == $val->getId()) {
+                            $rez[$j]['JornalPrev'] = $val1;
+                            unset($journal1Prev[$key1]);
+                            break;
+                        }
                     }
                 }
             }
@@ -180,20 +189,38 @@ class JournalExcel
             $sheet->getStyle("O$count_sections:O$count_sections")
                   ->getAlignment()
                   ->setWrapText(true); //заголовки столбцов
+
             if (isset($val['Jornal'])) {
-                $sheet->setCellValue('C' . $count_sections, $val['Jornal']->getTotal());
-                $sheet->setCellValue('D' . $count_sections, $val['Jornal']->getAtWork());
-                $sheet->setCellValue('E' . $count_sections, $val['Jornal']->getOnHoliday());
-                $sheet->setCellValue('F' . $count_sections, $val['Jornal']->getRemoteTotal());
-                $sheet->setCellValue('G' . $count_sections, $val['Jornal']->getRemotePregnant());
-                $sheet->setCellValue('H' . $count_sections, $val['Jornal']->getRemoteWithChildren());
-                $sheet->setCellValue('I' . $count_sections, $val['Jornal']->getRemoteOver60());
-                $sheet->setCellValue('J' . $count_sections, $val['Jornal']->getOnTwoWeekQuarantine());
-                $sheet->setCellValue('K' . $count_sections, $val['Jornal']->getOnSickLeave());
-                $sheet->setCellValue('L' . $count_sections, $val['Jornal']->getSickCOVID());
-                $sheet->setCellValue('M' . $count_sections, $val['Jornal']->getShiftRest());
-                $sheet->setCellValue('N' . $count_sections, $val['Jornal']->getDie());
-                $sheet->setCellValue('O' . $count_sections, $val['Jornal']->getNote());
+                if ($control) {
+                    $sheet->setCellValue('C' . $count_sections, $this->generateControlText($val, 'getTotal')['text']);
+                    $sheet->setCellValue('D' . $count_sections, $this->generateControlText($val, 'getAtWork')['text']);
+                    $sheet->setCellValue('E' . $count_sections, $this->generateControlText($val, 'getOnHoliday')['text']);
+                    $sheet->setCellValue('F' . $count_sections, $this->generateControlText($val, 'getRemoteTotal')['text']);
+                    $sheet->setCellValue('G' . $count_sections, $this->generateControlText($val, 'getRemotePregnant')['text']);
+                    $sheet->setCellValue('H' . $count_sections, $this->generateControlText($val, 'getRemoteWithChildren')['text']);
+                    $sheet->setCellValue('I' . $count_sections, $this->generateControlText($val, 'getRemoteOver60')['text']);
+                    $sheet->setCellValue('J' . $count_sections, $this->generateControlText($val, 'getOnTwoWeekQuarantine')['text']);
+                    $sheet->setCellValue('K' . $count_sections, $this->generateControlText($val, 'getOnSickLeave')['text']);
+                    $sheet->setCellValue('L' . $count_sections, $this->generateControlText($val, 'getSickCOVID')['text']);
+                    $sheet->setCellValue('M' . $count_sections, $this->generateControlText($val, 'getShiftRest')['text']);
+//                    $sheet->setCellValue('N' . $count_sections, $this->generateControlText($val, 'getDie')['text']);
+                    $this->generateControlCell($sheet, 'N' . $count_sections, $val, 'getDie');
+                    $sheet->setCellValue('O' . $count_sections, $val['Jornal']->getNote());
+                } else {
+                    $sheet->setCellValue('C' . $count_sections, $val['Jornal']->getTotal());
+                    $sheet->setCellValue('D' . $count_sections, $val['Jornal']->getAtWork());
+                    $sheet->setCellValue('E' . $count_sections, $val['Jornal']->getOnHoliday());
+                    $sheet->setCellValue('F' . $count_sections, $val['Jornal']->getRemoteTotal());
+                    $sheet->setCellValue('G' . $count_sections, $val['Jornal']->getRemotePregnant());
+                    $sheet->setCellValue('H' . $count_sections, $val['Jornal']->getRemoteWithChildren());
+                    $sheet->setCellValue('I' . $count_sections, $val['Jornal']->getRemoteOver60());
+                    $sheet->setCellValue('J' . $count_sections, $val['Jornal']->getOnTwoWeekQuarantine());
+                    $sheet->setCellValue('K' . $count_sections, $val['Jornal']->getOnSickLeave());
+                    $sheet->setCellValue('L' . $count_sections, $val['Jornal']->getSickCOVID());
+                    $sheet->setCellValue('M' . $count_sections, $val['Jornal']->getShiftRest());
+                    $sheet->setCellValue('N' . $count_sections, $val['Jornal']->getDie());
+                    $sheet->setCellValue('O' . $count_sections, $val['Jornal']->getNote());
+                }
             } else {
                 $sheet->setCellValue('C' . $count_sections, '-');
                 $sheet->setCellValue('D' . $count_sections, '-');
@@ -233,64 +260,64 @@ class JournalExcel
         $count_sections = $count_sections - 1;
         $sheet->getStyle("A3:N3")
               ->applyFromArray([
-                                   'alignment' => [
-                                       'vertical' => Alignment::VERTICAL_CENTER,
-                                       'horizontal' => Alignment::HORIZONTAL_CENTER
-                                   ]
+                      'alignment' => [
+                          'vertical' => Alignment::VERTICAL_CENTER,
+                          'horizontal' => Alignment::HORIZONTAL_CENTER
+                      ]
 
-                               ]
+                  ]
               );
         $sheet->getStyle("C4:N4")
               ->applyFromArray([
-                                   'alignment' => [
-                                       'vertical' => Alignment::VERTICAL_CENTER,
-                                       'horizontal' => Alignment::HORIZONTAL_CENTER
-                                   ]
+                      'alignment' => [
+                          'vertical' => Alignment::VERTICAL_CENTER,
+                          'horizontal' => Alignment::HORIZONTAL_CENTER
+                      ]
 
-                               ]
+                  ]
               );
         $sheet->getStyle("F5:I5")
               ->applyFromArray([
-                                   'alignment' => [
-                                       'vertical' => Alignment::VERTICAL_CENTER,
-                                       'horizontal' => Alignment::HORIZONTAL_CENTER
-                                   ]
+                      'alignment' => [
+                          'vertical' => Alignment::VERTICAL_CENTER,
+                          'horizontal' => Alignment::HORIZONTAL_CENTER
+                      ]
 
-                               ]
+                  ]
               );
         $sheet->getStyle("A3:A$count_sections")
               ->applyFromArray([
-                                   'alignment' => [
-                                       'horizontal' => Alignment::HORIZONTAL_CENTER
-                                   ]
+                      'alignment' => [
+                          'horizontal' => Alignment::HORIZONTAL_CENTER
+                      ]
 
-                               ]
+                  ]
               );
         $sheet->getStyle("C6:O$count_sections")
               ->applyFromArray([
-                                   'alignment' => [
-                                       'horizontal' => Alignment::HORIZONTAL_CENTER
-                                   ]
+                      'alignment' => [
+                          'horizontal' => Alignment::HORIZONTAL_CENTER
+                      ]
 
-                               ]
+                  ]
               );
         $sheet->getStyle("C2:C2")
               ->applyFromArray([
-                                   'alignment' => [
-                                       'horizontal' => Alignment::HORIZONTAL_CENTER
-                                   ]
+                      'alignment' => [
+                          'horizontal' => Alignment::HORIZONTAL_CENTER
+                      ]
 
-                               ]
+                  ]
               );
         $sheet->getStyle("A3:O$count_sections")
               ->applyFromArray([
-                                   'borders' => [
-                                       'allBorders' => [
-                                           'borderStyle' => Border::BORDER_THIN,
-                                           'color' => ['argb' => '00000000']
-                                       ]
-                                   ]
-                               ]);
+                  'borders' => [
+                      'allBorders' => [
+                          'borderStyle' => Border::BORDER_THIN,
+                          'color' => ['argb' => '00000000']
+                      ]
+                  ]
+              ]);
         $sheet->getStyle("O6:O$count_sections")
               ->getFont()
               ->setSize(10);
@@ -300,15 +327,15 @@ class JournalExcel
         $count_sections++;
         $sheet->getStyle("B$count_sections:N$count_sections")
               ->applyFromArray([
-                                   'borders' => [
-                                       'allBorders' => [
-                                           'borderStyle' => Border::BORDER_MEDIUM,
-                                           'color' => ['argb' => '00000000']
-                                       ]
-                                   ]
-                               ]);
+                  'borders' => [
+                      'allBorders' => [
+                          'borderStyle' => Border::BORDER_MEDIUM,
+                          'color' => ['argb' => '00000000']
+                      ]
+                  ]
+              ]);
 
-        $sheet->freezePaneByColumnAndRow(0,6);
+        $sheet->freezePaneByColumnAndRow(0, 6);
 
         $sheet2 = $spreadsheet->createSheet();
         $sheet2->setTitle('Контакты');
@@ -332,22 +359,88 @@ class JournalExcel
                ->setWidth(145);
         $sheet2->getStyle("A1:B$count_sections")
                ->applyFromArray([
-                                    'borders' => [
-                                        'allBorders' => [
-                                            'borderStyle' => Border::BORDER_THIN,
-                                            'color' => ['argb' => '00000000']
-                                        ]
-                                    ]
-                                ]);
+                   'borders' => [
+                       'allBorders' => [
+                           'borderStyle' => Border::BORDER_THIN,
+                           'color' => ['argb' => '00000000']
+                       ]
+                   ]
+               ]);
         $sheet->getStyle("A1:A1")
               ->applyFromArray([
-                                   'alignment' => [
-                                       'horizontal' => Alignment::HORIZONTAL_CENTER
-                                   ]
-                               ]
+                      'alignment' => [
+                          'horizontal' => Alignment::HORIZONTAL_CENTER
+                      ]
+                  ]
               );
         $writer = new Xlsx($spreadsheet);
 
         $writer->save($filename);
+    }
+
+    private function getJournal(\DateTimeInterface $date, bool $org = false): array
+    {
+        $qb = $this->em->getRepository(Journal::class)
+                       ->createQueryBuilder('j')
+                       ->leftJoin('j.organization', 'o')
+                       ->andWhere('j.date = :date')
+                       ->setParameter('date', $date)
+                       ->andWhere('j.isActive = 1')
+                       ->addOrderBy('o.sort', 'ASC');
+
+        if (false === $org) {
+            $qb->andWhere('j.organization IS NULL');
+        } else {
+            $qb->andWhere('j.organization IS NOT NULL');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    private function generateControlText(array $val, string $method): array
+    {
+        $txt = (string)call_user_func([$val['Jornal'], $method]);
+        $color = 'default';
+        if (isset($val['JornalPrev']) && call_user_func([$val['Jornal'], $method]) !== call_user_func([$val['JornalPrev'], $method])) {
+            $diff = call_user_func([$val['Jornal'], $method]) - call_user_func([$val['JornalPrev'], $method]);
+            $txt .= ' (' . ($diff > 0 ? '+' : '-') . $diff . ')';
+            switch (true) {
+                case (abs($diff) <= 5):
+                    $color = 'yellow';
+                    break;
+                case (abs($diff) > 5):
+                    $color = 'red';
+                    break;
+            }
+        }
+
+        return [
+            'text' => $txt,
+            'color' => $color
+        ];
+    }
+
+    private function generateControlCell(Worksheet $sheet, string $cellIndex, array $val, string $method): void
+    {
+        $txt = (string)call_user_func([$val['Jornal'], $method]);
+        $color = 'default';
+        if (isset($val['JornalPrev']) && call_user_func([$val['Jornal'], $method]) !== call_user_func([$val['JornalPrev'], $method])) {
+            $diff = call_user_func([$val['Jornal'], $method]) - call_user_func([$val['JornalPrev'], $method]);
+            $txt .= ' (' . ($diff > 0 ? '+' : '-') . $diff . ')';
+            switch (true) {
+                case (abs($diff) <= 5):
+                    $color = 'f0ffa7';
+                    break;
+                case (abs($diff) > 5):
+                    $color = 'ff8f8f';
+                    break;
+            }
+        }
+
+        $sheet->setCellValue($cellIndex,$txt);
+
+        if ($color !== 'default') {
+            $sheet->getStyle($cellIndex)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB($color);
+        }
     }
 }

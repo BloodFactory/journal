@@ -3,23 +3,17 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Journal;
-use App\Entity\Organization;
 use App\Entity\User;
 use App\Service\JournalExcel;
 use DateTime;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use DateTimeImmutable;
 use PhpOffice\PhpSpreadsheet\Writer\Exception;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\ORM\Query\ResultSetMapping;
-use Doctrine\ORM\EntityManager;
 
 class DownloadExcelController extends AbstractController
 {
@@ -40,12 +34,12 @@ class DownloadExcelController extends AbstractController
         $date = $request->query->get('date');
 
         if (!$date) {
-            $date = new DateTime();
+            $date = new DateTimeImmutable();
         } else {
             try {
-                $date = new DateTime($date);
+                $date = new DateTimeImmutable($date);
             } catch (Exception $e) {
-                $date = new DateTime();
+                $date = new DateTimeImmutable();
             }
         }
 

@@ -180,6 +180,23 @@ class JournalExcel
         $sheet->mergeCellsByColumnAndRow(14, 4, 14, 5); //объединение ячеек;
         $count_sections = 6; // разделы ---- >> N ROW!
 
+        if ($control) {
+            $total = [
+                'getTotal' => [0, 0],
+                'getAtWork' => [0, 0],
+                'getOnHoliday' => [0, 0],
+                'getRemoteTotal' => [0, 0],
+                'getRemotePregnant' => [0, 0],
+                'getRemoteWithChildren' => [0, 0],
+                'getRemoteOver60' => [0, 0],
+                'getOnTwoWeekQuarantine' => [0, 0],
+                'getOnSickLeave' => [0, 0],
+                'getSickCOVID' => [0, 0],
+                'getShiftRest' => [0, 0],
+                'getDie' => [0, 0],
+            ];
+        }
+
         foreach ($rez as $key => $val) {
             $sheet->setCellValue('A' . $count_sections, $val['Org_Number']);
             $sheet->setCellValue('B' . $count_sections, $val['Org_Name']);
@@ -192,18 +209,18 @@ class JournalExcel
 
             if (isset($val['Jornal'])) {
                 if ($control) {
-                    $this->generateControlCell($sheet, 'C' . $count_sections, $val, 'getTotal');
-                    $this->generateControlCell($sheet, 'D' . $count_sections, $val, 'getAtWork');
-                    $this->generateControlCell($sheet, 'E' . $count_sections, $val, 'getOnHoliday');
-                    $this->generateControlCell($sheet, 'F' . $count_sections, $val, 'getRemoteTotal');
-                    $this->generateControlCell($sheet, 'G' . $count_sections, $val, 'getRemotePregnant');
-                    $this->generateControlCell($sheet, 'H' . $count_sections, $val, 'getRemoteWithChildren');
-                    $this->generateControlCell($sheet, 'I' . $count_sections, $val, 'getRemoteOver60');
-                    $this->generateControlCell($sheet, 'J' . $count_sections, $val, 'getOnTwoWeekQuarantine');
-                    $this->generateControlCell($sheet, 'K' . $count_sections, $val, 'getOnSickLeave');
-                    $this->generateControlCell($sheet, 'L' . $count_sections, $val, 'getSickCOVID');
-                    $this->generateControlCell($sheet, 'M' . $count_sections, $val, 'getShiftRest');
-                    $this->generateControlCell($sheet, 'N' . $count_sections, $val, 'getDie');
+                    $this->generateControlCell($sheet, 'C' . $count_sections, $val, 'getTotal', $total);
+                    $this->generateControlCell($sheet, 'D' . $count_sections, $val, 'getAtWork', $total);
+                    $this->generateControlCell($sheet, 'E' . $count_sections, $val, 'getOnHoliday', $total);
+                    $this->generateControlCell($sheet, 'F' . $count_sections, $val, 'getRemoteTotal', $total);
+                    $this->generateControlCell($sheet, 'G' . $count_sections, $val, 'getRemotePregnant', $total);
+                    $this->generateControlCell($sheet, 'H' . $count_sections, $val, 'getRemoteWithChildren', $total);
+                    $this->generateControlCell($sheet, 'I' . $count_sections, $val, 'getRemoteOver60', $total);
+                    $this->generateControlCell($sheet, 'J' . $count_sections, $val, 'getOnTwoWeekQuarantine', $total);
+                    $this->generateControlCell($sheet, 'K' . $count_sections, $val, 'getOnSickLeave', $total);
+                    $this->generateControlCell($sheet, 'L' . $count_sections, $val, 'getSickCOVID', $total);
+                    $this->generateControlCell($sheet, 'M' . $count_sections, $val, 'getShiftRest', $total);
+                    $this->generateControlCell($sheet, 'N' . $count_sections, $val, 'getDie', $total);
                     $sheet->setCellValue('O' . $count_sections, $val['Jornal']->getNote());
                 } else {
                     $sheet->setCellValue('C' . $count_sections, $val['Jornal']->getTotal());
@@ -243,18 +260,33 @@ class JournalExcel
         $prevRow = $count_sections - 1;
 
         $sheet->setCellValue('B' . $count_sections, 'Итого');
-        $sheet->setCellValue('C' . $count_sections, sprintf('=SUM(C6:C%s)', $prevRow));
-        $sheet->setCellValue('D' . $count_sections, sprintf('=SUM(D6:D%s)', $prevRow));
-        $sheet->setCellValue('E' . $count_sections, sprintf('=SUM(E6:E%s)', $prevRow));
-        $sheet->setCellValue('F' . $count_sections, sprintf('=SUM(F6:F%s)', $prevRow));
-        $sheet->setCellValue('G' . $count_sections, sprintf('=SUM(G6:G%s)', $prevRow));
-        $sheet->setCellValue('H' . $count_sections, sprintf('=SUM(H6:H%s)', $prevRow));
-        $sheet->setCellValue('I' . $count_sections, sprintf('=SUM(I6:I%s)', $prevRow));
-        $sheet->setCellValue('J' . $count_sections, sprintf('=SUM(J6:J%s)', $prevRow));
-        $sheet->setCellValue('K' . $count_sections, sprintf('=SUM(K6:K%s)', $prevRow));
-        $sheet->setCellValue('L' . $count_sections, sprintf('=SUM(L6:L%s)', $prevRow));
-        $sheet->setCellValue('M' . $count_sections, sprintf('=SUM(M6:M%s)', $prevRow));
-        $sheet->setCellValue('N' . $count_sections, sprintf('=SUM(N6:N%s)', $prevRow));
+        if ($control) {
+            $sheet->setCellValue('C' . $count_sections, $total['getTotal'][0] . ' (' . ($total['getTotal'][1] > 0 ? '+' : '') . $total['getTotal'][1] . ')');
+            $sheet->setCellValue('D' . $count_sections, $total['getAtWork'][0] . ' (' . ($total['getAtWork'][1] > 0 ? '+' : '') . $total['getAtWork'][1] . ')');
+            $sheet->setCellValue('E' . $count_sections, $total['getOnHoliday'][0] . ' (' . ($total['getOnHoliday'][1] > 0 ? '+' : '') . $total['getOnHoliday'][1] . ')');
+            $sheet->setCellValue('F' . $count_sections, $total['getRemoteTotal'][0] . ' (' . ($total['getRemoteTotal'][1] > 0 ? '+' : '') . $total['getRemoteTotal'][1] . ')');
+            $sheet->setCellValue('G' . $count_sections, $total['getRemotePregnant'][0] . ' (' . ($total['getRemotePregnant'][1] > 0 ? '+' : '') . $total['getRemotePregnant'][1] . ')');
+            $sheet->setCellValue('H' . $count_sections, $total['getRemoteWithChildren'][0] . ' (' . ($total['getRemoteWithChildren'][1] > 0 ? '+' : '') . $total['getRemoteWithChildren'][1] . ')');
+            $sheet->setCellValue('I' . $count_sections, $total['getRemoteOver60'][0] . ' (' . ($total['getRemoteOver60'][1] > 0 ? '+' : '') . $total['getRemoteOver60'][1] . ')');
+            $sheet->setCellValue('J' . $count_sections, $total['getOnTwoWeekQuarantine'][0] . ' (' . ($total['getOnTwoWeekQuarantine'][1] > 0 ? '+' : '') . $total['getOnTwoWeekQuarantine'][1] . ')');
+            $sheet->setCellValue('K' . $count_sections, $total['getOnSickLeave'][0] . ' (' . ($total['getOnSickLeave'][1] > 0 ? '+' : '') . $total['getOnSickLeave'][1] . ')');
+            $sheet->setCellValue('L' . $count_sections, $total['getSickCOVID'][0] . ' (' . ($total['getSickCOVID'][1] > 0 ? '+' : '') . $total['getSickCOVID'][1] . ')');
+            $sheet->setCellValue('M' . $count_sections, $total['getShiftRest'][0] . ' (' . ($total['getShiftRest'][1] > 0 ? '+' : '') . $total['getShiftRest'][1] . ')');
+            $sheet->setCellValue('N' . $count_sections, $total['getDie'][0] . ' (' . ($total['getDie'][1] > 0 ? '+' : '') . $total['getDie'][1] . ')');
+        } else {
+            $sheet->setCellValue('C' . $count_sections, sprintf('=SUM(C6:C%s)', $prevRow));
+            $sheet->setCellValue('D' . $count_sections, sprintf('=SUM(D6:D%s)', $prevRow));
+            $sheet->setCellValue('E' . $count_sections, sprintf('=SUM(E6:E%s)', $prevRow));
+            $sheet->setCellValue('F' . $count_sections, sprintf('=SUM(F6:F%s)', $prevRow));
+            $sheet->setCellValue('G' . $count_sections, sprintf('=SUM(G6:G%s)', $prevRow));
+            $sheet->setCellValue('H' . $count_sections, sprintf('=SUM(H6:H%s)', $prevRow));
+            $sheet->setCellValue('I' . $count_sections, sprintf('=SUM(I6:I%s)', $prevRow));
+            $sheet->setCellValue('J' . $count_sections, sprintf('=SUM(J6:J%s)', $prevRow));
+            $sheet->setCellValue('K' . $count_sections, sprintf('=SUM(K6:K%s)', $prevRow));
+            $sheet->setCellValue('L' . $count_sections, sprintf('=SUM(L6:L%s)', $prevRow));
+            $sheet->setCellValue('M' . $count_sections, sprintf('=SUM(M6:M%s)', $prevRow));
+            $sheet->setCellValue('N' . $count_sections, sprintf('=SUM(N6:N%s)', $prevRow));
+        }
 
         $count_sections = $count_sections - 1;
         $sheet->getStyle("A3:N3")
@@ -396,12 +428,14 @@ class JournalExcel
         return $qb->getQuery()->getResult();
     }
 
-    private function generateControlCell(Worksheet $sheet, string $cellIndex, array $val, string $method): void
+    private function generateControlCell(Worksheet $sheet, string $cellIndex, array $val, string $method, array &$total): void
     {
+        $total[$method][0] += call_user_func([$val['Jornal'], $method]);
         $txt = (string)call_user_func([$val['Jornal'], $method]);
         $color = 'default';
         if (isset($val['JornalPrev']) && call_user_func([$val['Jornal'], $method]) !== call_user_func([$val['JornalPrev'], $method])) {
             $diff = call_user_func([$val['Jornal'], $method]) - call_user_func([$val['JornalPrev'], $method]);
+            $total[$method][1] += $diff;
             $txt .= ' (' . ($diff > 0 ? '+' : '') . $diff . ')';
             switch (true) {
                 case (abs($diff) <= 5):
@@ -413,7 +447,7 @@ class JournalExcel
             }
         }
 
-        $sheet->setCellValue($cellIndex,$txt);
+        $sheet->setCellValue($cellIndex, $txt);
 
         if ($color !== 'default') {
             $sheet->getStyle($cellIndex)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB($color);

@@ -192,18 +192,17 @@ class JournalExcel
 
             if (isset($val['Jornal'])) {
                 if ($control) {
-                    $sheet->setCellValue('C' . $count_sections, $this->generateControlText($val, 'getTotal')['text']);
-                    $sheet->setCellValue('D' . $count_sections, $this->generateControlText($val, 'getAtWork')['text']);
-                    $sheet->setCellValue('E' . $count_sections, $this->generateControlText($val, 'getOnHoliday')['text']);
-                    $sheet->setCellValue('F' . $count_sections, $this->generateControlText($val, 'getRemoteTotal')['text']);
-                    $sheet->setCellValue('G' . $count_sections, $this->generateControlText($val, 'getRemotePregnant')['text']);
-                    $sheet->setCellValue('H' . $count_sections, $this->generateControlText($val, 'getRemoteWithChildren')['text']);
-                    $sheet->setCellValue('I' . $count_sections, $this->generateControlText($val, 'getRemoteOver60')['text']);
-                    $sheet->setCellValue('J' . $count_sections, $this->generateControlText($val, 'getOnTwoWeekQuarantine')['text']);
-                    $sheet->setCellValue('K' . $count_sections, $this->generateControlText($val, 'getOnSickLeave')['text']);
-                    $sheet->setCellValue('L' . $count_sections, $this->generateControlText($val, 'getSickCOVID')['text']);
-                    $sheet->setCellValue('M' . $count_sections, $this->generateControlText($val, 'getShiftRest')['text']);
-//                    $sheet->setCellValue('N' . $count_sections, $this->generateControlText($val, 'getDie')['text']);
+                    $this->generateControlCell($sheet, 'C' . $count_sections, $val, 'getTotal');
+                    $this->generateControlCell($sheet, 'D' . $count_sections, $val, 'getAtWork');
+                    $this->generateControlCell($sheet, 'E' . $count_sections, $val, 'getOnHoliday');
+                    $this->generateControlCell($sheet, 'F' . $count_sections, $val, 'getRemoteTotal');
+                    $this->generateControlCell($sheet, 'G' . $count_sections, $val, 'getRemotePregnant');
+                    $this->generateControlCell($sheet, 'H' . $count_sections, $val, 'getRemoteWithChildren');
+                    $this->generateControlCell($sheet, 'I' . $count_sections, $val, 'getRemoteOver60');
+                    $this->generateControlCell($sheet, 'J' . $count_sections, $val, 'getOnTwoWeekQuarantine');
+                    $this->generateControlCell($sheet, 'K' . $count_sections, $val, 'getOnSickLeave');
+                    $this->generateControlCell($sheet, 'L' . $count_sections, $val, 'getSickCOVID');
+                    $this->generateControlCell($sheet, 'M' . $count_sections, $val, 'getShiftRest');
                     $this->generateControlCell($sheet, 'N' . $count_sections, $val, 'getDie');
                     $sheet->setCellValue('O' . $count_sections, $val['Jornal']->getNote());
                 } else {
@@ -395,29 +394,6 @@ class JournalExcel
         }
 
         return $qb->getQuery()->getResult();
-    }
-
-    private function generateControlText(array $val, string $method): array
-    {
-        $txt = (string)call_user_func([$val['Jornal'], $method]);
-        $color = 'default';
-        if (isset($val['JornalPrev']) && call_user_func([$val['Jornal'], $method]) !== call_user_func([$val['JornalPrev'], $method])) {
-            $diff = call_user_func([$val['Jornal'], $method]) - call_user_func([$val['JornalPrev'], $method]);
-            $txt .= ' (' . ($diff > 0 ? '+' : '-') . $diff . ')';
-            switch (true) {
-                case (abs($diff) <= 5):
-                    $color = 'yellow';
-                    break;
-                case (abs($diff) > 5):
-                    $color = 'red';
-                    break;
-            }
-        }
-
-        return [
-            'text' => $txt,
-            'color' => $color
-        ];
     }
 
     private function generateControlCell(Worksheet $sheet, string $cellIndex, array $val, string $method): void

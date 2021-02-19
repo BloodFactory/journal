@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
@@ -27,7 +28,9 @@ class SaveExcelCommand extends Command
     {
         $this
             ->addArgument('date', InputArgument::REQUIRED, 'Дата')
-            ->addArgument('folder', InputArgument::OPTIONAL, 'Диретория, куда будет сохранен файл', $_ENV['EXCEL_DIR']);
+            ->addArgument('folder', InputArgument::OPTIONAL, 'Диретория, куда будет сохранен файл', $_ENV['EXCEL_DIR'])
+            ->addOption('control', 'c', InputOption::VALUE_NONE, '');
+
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
@@ -37,6 +40,7 @@ class SaveExcelCommand extends Command
 
             $date = $input->getArgument('date');
             $folder = $input->getArgument('folder');
+            $control = $input->getOption('control');
 
             $date = new DateTimeImmutable($date);
 
@@ -47,17 +51,16 @@ class SaveExcelCommand extends Command
             ];
 
             $y = $date->format('d.m.Y');
-            $s = "Доклад ОШ $y.xlsx";
-            $s1 = "Доклад ОШ ${y}_.xlsx";
+            $s = "Доклад ОШ $y";
+            if ($control) $s .= '_';
+            $s .= '.xlsx';
 
             $filename = $folder . $s;
-            $filename1 = $folder . $s1;
 
             $io->title('Сохранение EXCEL файлов');
             $io->block('Путь файла: ' . $filename);
 
-            $this->je->save($date, $filename);
-            $this->je->save($date, $filename1, null, true);
+            $this->je->save($date, $filename, null, $control);
 
             $io->success('Файлы успешно сохранены');
 

@@ -23,14 +23,14 @@
                           class="uk-form-horizontal"
                           name="{{ formName }}">
                         <div class="uk-flex">
-                            {% if app.user.organization.branches %}
+                            {% if organization.branches %}
                                 <ul class="uk-tab-left" uk-tab="index: 0">
                                     <li><a href="#">Основная форма</a></li>
                                     <li><a href="#">Филиалы</a></li>
                                 </ul>
                             {% endif %}
 
-                            {% if app.user.organization.branches %}
+                            {% if organization.branches %}
                             <ul class="uk-switcher uk-flex-1">
                                 <li>
                                     {% endif %}
@@ -44,7 +44,7 @@
                                                    disabled
                                                    class="uk-input"
                                                    style="width: 100%"
-                                                   value="{{ app.user.organization.name }}"
+                                                   value="{{ organization.name }}"
                                                    aria-label="Название организации">
                                         </div>
 
@@ -228,7 +228,7 @@
                                                       style="width: 100%">{{ report.note }}</textarea>
                                         </div>
                                     </div>
-                                    {% if app.user.organization.branches %}
+                                    {% if organization.branches %}
                                 </li>
                                 <li>
                                     <div id="journalBranchesForm"
@@ -240,7 +240,7 @@
                                                    disabled
                                                    class="uk-input"
                                                    style="width: 100%"
-                                                   value="Филиалы {{ app.user.organization.name }}"
+                                                   value="Филиалы {{ organization.name }}"
                                                    aria-label="Название организации">
                                         </div>
 
@@ -427,69 +427,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
-        $(function () {
-            $('.datepicker').datepicker({
-                dayNames: [
-                    "Воскресенье",
-                    "Понедельник",
-                    "Вторник",
-                    "Среда",
-                    "Четверг",
-                    "Пятница",
-                    "Суббота"
-                ],
-                dayNamesMin: [
-                    "Вс",
-                    "Пн",
-                    "Вт",
-                    "Ср",
-                    "Чт",
-                    "Пт",
-                    "Сб"
-                ],
-                dayNamesShort: [
-                    "Вос",
-                    "Пон",
-                    "Вто",
-                    "Сре",
-                    "Чет",
-                    "Пят",
-                    "Суб"
-                ],
-                monthNames: [
-                    "Январь",
-                    "Февраль",
-                    "Март",
-                    "Апрель",
-                    "Май",
-                    "Июнь",
-                    "Июль",
-                    "Август",
-                    "Сентябрь",
-                    "Октябрь",
-                    "Ноябрь",
-                    "Декабрь"
-                ],
-                monthNamesShort: [
-                    "Янв",
-                    "Фев",
-                    "Мар",
-                    "Апр",
-                    "Май",
-                    "Июн",
-                    "Июл",
-                    "Авг",
-                    "Сен",
-                    "Окт",
-                    "Ноя",
-                    "Дек"
-                ],
-                firstDay: 1,
-                changeYear: true,
-                changeMonth: true,
-                dateFormat: "dd.mm.yy"
-            });
-        })
-    </script>
+    <script src="{{ asset('js/daily_report.js', 'custom') }}"></script>
 {% endblock %}

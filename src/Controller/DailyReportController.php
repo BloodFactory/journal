@@ -34,7 +34,7 @@ class DailyReportController extends AbstractController
 
         /** @var User $user */
         $user = $this->getUser();
-        $organization = $user->getOrganization();
+        $organization = 0 !== $reportID ? $report->getOrganization() : $user->getOrganization();
         if ($organization->getBranches() && !$report->getBranches()[0]) {
             $branch = new Journal();
             $report->addBranch($branch);
@@ -52,6 +52,7 @@ class DailyReportController extends AbstractController
 
         return $this->render('daily_report/index.html.twig', [
             'report' => $report,
+            'organization' => $organization,
             'query' => $request->getSession()->get(HomepageController::SESSION_KEY),
             'error' => $error ?? ''
         ]);
@@ -81,7 +82,7 @@ class DailyReportController extends AbstractController
                 'date' => $date,
                 'isActive' => true
             ])) {
-            throw new Exception("В системе уже имеется запись датрованная {$date->format('d.m.Y')} от организации {$organization->getName()}");
+            throw new Exception("В системе уже имеется запись датированная {$date->format('d.m.Y')} от организации {$organization->getName()}");
         }
 
         $report
@@ -102,8 +103,7 @@ class DailyReportController extends AbstractController
             ->setDie((int)$data['journalForm_Die'])
             ->setNote($data['journalForm_note']);
 
-        if ($organization->getBranches()) {
-            $reportBranch = $report->getBranches()[0];
+        if (null !== $reportBranch = $report->getBranches()[0]) {
 
             $reportBranch
                 ->setDate($date)

@@ -2,7 +2,7 @@ security:
     role_hierarchy:
         ROLE_MORFLOT: ROLE_USER
         ROLE_OBSERVER: ROLE_USER
-
+        ROLE_ALLOW_TO_MODIFY_ALL: ROLE_MORFLOT
     encoders:
         App\Entity\User:
             algorithm: auto

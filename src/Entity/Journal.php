@@ -361,14 +361,18 @@ class Journal
     }
 
     /**
+     * @param bool $allowToModify
      * @return DateTimeInterface
-     * @throws Exception
      */
-    public function nextDay(): DateTimeInterface
+    public function nextDay(bool $allowToModify = false): DateTimeInterface
     {
         $date = clone $this->date;
         $date = $date->add(new DateInterval('P1D'));
-        $date->setTime(8, 30, 0);
+        if ($allowToModify) {
+            $date->setTime(9, 30, 0);
+        } else {
+            $date->setTime(8, 30, 0);
+        }
 
         return $date;
     }

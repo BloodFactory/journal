@@ -28,7 +28,7 @@
         }
 
         .activeSticky {
-            box-shadow:0 5px 8px 2px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 8px 2px rgba(0, 0, 0, 0.3);
         }
     </style>
 {% endblock %}
@@ -43,13 +43,13 @@
 
                 <div class="uk-navbar-right">
                     <a href="{{ path('app_logout') }}"
-                    class="uk-button uk-button-danger">
+                       class="uk-button uk-button-danger">
                         <span class="uk-margin-small-right" uk-icon="sign-out"></span>
                         Выход
                     </a>
                 </div>
             </div>
-            
+
         </nav>
     </header>
 
@@ -132,6 +132,7 @@
 
                     <tbody>
                     {% if journal|length > 0 %}
+                        {% set allowToModify = is_granted('ROLE_ALLOW_TO_MODIFY_ALL') %}
                         {% for item in journal %}
                             <tr>
                                 <td>
@@ -161,12 +162,14 @@
                                 <td>{{ item.note }}</td>
                                 <td>
                                     <ul class="uk-iconnav">
-                                        {% if now < item.nextDay %}
-                                            {% if app.user.organization.id == item.organization.id %}
+                                        {% if now < item.nextDay(allowToModify) %}
+                                            {% if app.user.organization.id == item.organization.id or allowToModify %}
                                                 <li><a href="{{ path('daily_report', {id: item.id}) }}"
                                                        class="uk-text-primary"
                                                        uk-icon="icon: file-edit"
                                                        uk-tooltip="Редактировать"></a></li>
+                                            {% endif %}
+                                            {% if app.user.organization.id == item.organization.id %}
                                                 <li><a href="{{ path('delete_daily_report', {id: item.id}) }}"
                                                        class="delete_daily_report uk-text-danger"
                                                        uk-icon="icon: trash"
@@ -224,38 +227,5 @@
 {% block javascripts %}
     {{ parent() }}
 
-    <script>
-        $(function () {
-            $('.datepicker').datepicker({
-                firstDay: 1,
-                dateFormat: 'dd.mm.yy',
-                dayNames: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
-                dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-                dayNamesShort: ['Вос', 'Пон', 'Вто', 'Сре', 'Чет', 'Пят', 'Суб'],
-                monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-                monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
-                nextText: 'Вперед',
-                prevText: 'Назад',
-                showAnim: 'slideDown',
-                showOtherMonths: true,
-                weekHeader: 'Нед',
-                changeMonth: true,
-                changeYear: true
-            });
-
-            $(document).on('click', '.delete_daily_report', function (e) {
-                if (!confirm('Удалить запись?')) {
-                    e.preventDefault();
-                }
-            })
-
-            $('#downloadJournal').on('click', function (e) {
-                e.preventDefault();
-
-                var date = $('#date').val();
-
-                window.location = '/download?date=' + date;
-            })
-        })
-    </script>
+    <script src="{{ asset('js/homepage.js', 'custom') }}"></script>
 {% endblock %}

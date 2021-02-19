@@ -369,7 +369,7 @@ class Journal
         $date = clone $this->date;
         $date = $date->add(new DateInterval('P1D'));
         if ($allowToModify) {
-            $date->setTime(9, 30, 0);
+            $date->setTime(10, 00, 0);
         } else {
             $date->setTime(8, 30, 0);
         }

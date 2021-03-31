@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Journal;
 use App\Entity\Organization;
 use App\Entity\User;
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
@@ -29,6 +29,10 @@ class DailyReportController extends AbstractController
      */
     public function index(Request $request): Response
     {
+        if ($this->isGranted('ROLE_OBSERVER')) {
+            return new Response('', Response::HTTP_NOT_FOUND);
+        }
+
         $reportID = $request->query->getInt('id');
         $report = $reportID ? $this->getDoctrine()->getRepository(Journal::class)->find($reportID) : new Journal();
 
@@ -46,7 +50,6 @@ class DailyReportController extends AbstractController
                 return $this->redirectToRoute('homepage', $request->getSession()->get(HomepageController::SESSION_KEY));
             } catch (Throwable $e) {
                 $error = $e->getMessage();
-
             }
         }
 
@@ -70,26 +73,23 @@ class DailyReportController extends AbstractController
      */
     private function save(Request $request, Journal $report, Organization $organization, int $reportID): void
     {
-
         $data = $request->request->all();
 
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
-        $date = new DateTime($data['journalForm_date']);
-
-        if (0 === $reportID && null !== $this->getDoctrine()->getRepository(Journal::class)->findOneBy([
-                'organization' => $organization,
-                'date' => $date,
-                'isActive' => true
-            ])) {
-            throw new Exception("В системе уже имеется запись датированная {$date->format('d.m.Y')} от организации {$organization->getName()}");
-        }
+        $date = new DateTimeImmutable($data['journalForm_date']);
 
         $report
             ->setOrganization($organization)
             ->setDate($date)
-            ->setTotal((int)$data['journalForm_atWork'] + (int)$data['journalForm_onHoliday'] + (int)$data['journalForm_remoteTotal'] + (int)$data['journalForm_onTwoWeekQuarantine'] +
-                (int)$data['journalForm_onSickLeave'] + (int)$data['journalForm_ShiftRest'])
+            ->setTotal(
+                (int)$data['journalForm_atWork'] +
+                (int)$data['journalForm_onHoliday'] +
+                (int)$data['journalForm_remoteTotal'] +
+                (int)$data['journalForm_onTwoWeekQuarantine'] +
+                (int)$data['journalForm_onSickLeave'] +
+                (int)$data['journalForm_ShiftRest']
+            )
             ->setAtWork((int)$data['journalForm_atWork'])
             ->setOnHoliday((int)$data['journalForm_onHoliday'])
             ->setRemoteTotal((int)$data['journalForm_remoteTotal'])
@@ -107,8 +107,14 @@ class DailyReportController extends AbstractController
 
             $reportBranch
                 ->setDate($date)
-                ->setTotal((int)$data['journalBranchesForm_atWork'] + (int)$data['journalBranchesForm_onHoliday'] + (int)$data['journalBranchesForm_remoteTotal'] + (int)$data['journalBranchesForm_onTwoWeekQuarantine'] +
-                    (int)$data['journalBranchesForm_onSickLeave'] + (int)$data['journalBranchesForm_ShiftRest'])
+                ->setTotal(
+                    (int)$data['journalBranchesForm_atWork'] +
+                    (int)$data['journalBranchesForm_onHoliday'] +
+                    (int)$data['journalBranchesForm_remoteTotal'] +
+                    (int)$data['journalBranchesForm_onTwoWeekQuarantine'] +
+                    (int)$data['journalBranchesForm_onSickLeave'] +
+                    (int)$data['journalBranchesForm_ShiftRest']
+                )
                 ->setAtWork((int)$data['journalBranchesForm_atWork'])
                 ->setOnHoliday((int)$data['journalBranchesForm_onHoliday'])
                 ->setRemoteTotal((int)$data['journalBranchesForm_remoteTotal'])
@@ -125,6 +131,30 @@ class DailyReportController extends AbstractController
             $em->persist($reportBranch);
         }
 
+        if (0 === $reportID && null !== $this->getDoctrine()->getRepository(Journal::class)->findOneBy([
+                'organization' => $organization,
+                'date' => $date,
+                'isActive' => true
+            ])) {
+            throw new Exception("В системе уже имеется запись датированная {$date->format('d.m.Y')} от организации {$organization->getName()}");
+        }
+
+        $now = new DateTimeImmutable();
+
+        $diff = $now->diff($date);
+
+        if ($diff->invert === 0) {
+            throw new Exception('Нельзя вносить данные будущим числом');
+        }
+
+        if ($diff->y > 0 || $diff->m > 0 || $diff->d > 1 || (
+                $diff->d === 1 && $diff->s + $diff->i * 60 + $diff->h * 60 * 60 > 30600
+            )) {
+            throw new Exception('Редактировать или вносить данные можно до 8:30 следующего дня');
+        }
+
+        $curDie = (int)$data['journalForm_Die'] ?: 0;
+
         /** @var Journal $lastReport */
         $lastReport = $em->createQueryBuilder()
                          ->from(Journal::class, 'J')
@@ -138,9 +168,6 @@ class DailyReportController extends AbstractController
                          ->setMaxResults(1)
                          ->getQuery()
                          ->getOneOrNullResult();
-
-        $curDie = (int)$data['journalForm_Die'] ?: 0;
-
 
         if (null !== $lastReport && ($lastDie = $lastReport->getDie()) > $curDie) {
             throw new Exception("Количество скончавшихся от COVID-19 не может быть менее $lastDie человек(а), так как данное значение вводится нарастающим итогом.");

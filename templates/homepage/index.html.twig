@@ -61,12 +61,13 @@
                  uk-height-viewport="offset-top: true; offset-bottom: 40px">
                 <div class="uk-flex uk-flex-between">
                     <div>
-                        <a href="{{ path('daily_report') }}"
-                           class="uk-button uk-button-primary">
-                        <span class="uk-margin-small-right"
-                              uk-icon="plus"></span>
-                            Добавить
-                        </a>
+                        {% if not is_granted('ROLE_OBSERVER') %}
+                            <a href="{{ path('daily_report') }}"
+                               class="uk-button uk-button-primary">
+                                <span class="uk-margin-small-right" uk-icon="plus"></span>
+                                Добавить
+                            </a>
+                        {% endif %}
                         {% if is_granted('ROLE_MORFLOT') %}
                             <button class="uk-button uk-button-secondary" id="downloadJournal">
                             <span class="uk-margin-small-right"
@@ -109,7 +110,9 @@
                         {% endif %}
                         <th colspan="12" class="uk-text-center" style="padding: 7px">Количество работников</th>
                         <th rowspan="3" style="padding: 7px">Примечание</th>
-                        <th rowspan="3" style="min-width: 60px; padding: 7px"></th>
+                        {% if not is_granted('ROLE_OBSERVER') %}
+                            <th rowspan="3" style="min-width: 60px; padding: 7px"></th>
+                        {% endif %}
                     </tr>
                     <tr>
                         <th rowspan="2" style="padding: 7px; width: 80px;">Фактическая численность</th>
@@ -160,24 +163,26 @@
                                 <td>{{ item.ShiftRest }}</td>
                                 <td>{{ item.Die }}</td>
                                 <td>{{ item.note }}</td>
-                                <td>
-                                    <ul class="uk-iconnav">
-                                        {% if now < item.nextDay(allowToModify) %}
-                                            {% if app.user.organization.id == item.organization.id or allowToModify %}
-                                                <li><a href="{{ path('daily_report', {id: item.id}) }}"
-                                                       class="uk-text-primary"
-                                                       uk-icon="icon: file-edit"
-                                                       uk-tooltip="Редактировать"></a></li>
+                                {% if not is_granted('ROLE_OBSERVER') %}
+                                    <td>
+                                        <ul class="uk-iconnav">
+                                            {% if now < item.nextDay(allowToModify) %}
+                                                {% if app.user.organization.id == item.organization.id or allowToModify %}
+                                                    <li><a href="{{ path('daily_report', {id: item.id}) }}"
+                                                           class="uk-text-primary"
+                                                           uk-icon="icon: file-edit"
+                                                           uk-tooltip="Редактировать"></a></li>
+                                                {% endif %}
+                                                {% if app.user.organization.id == item.organization.id %}
+                                                    <li><a href="{{ path('delete_daily_report', {id: item.id}) }}"
+                                                           class="delete_daily_report uk-text-danger"
+                                                           uk-icon="icon: trash"
+                                                           uk-tooltip="Удалить"></a></li>
+                                                {% endif %}
                                             {% endif %}
-                                            {% if app.user.organization.id == item.organization.id %}
-                                                <li><a href="{{ path('delete_daily_report', {id: item.id}) }}"
-                                                       class="delete_daily_report uk-text-danger"
-                                                       uk-icon="icon: trash"
-                                                       uk-tooltip="Удалить"></a></li>
-                                            {% endif %}
-                                        {% endif %}
-                                    </ul>
-                                </td>
+                                        </ul>
+                                    </td>
+                                {% endif %}
                             </tr>
 
                             {% if item.organization.branches %}

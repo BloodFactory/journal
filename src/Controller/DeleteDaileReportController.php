@@ -1,4 +1,4 @@
-<?php 
+<?php
 declare(strict_types=1);
 
 namespace App\Controller;
@@ -19,6 +19,10 @@ class DeleteDaileReportController extends AbstractController
      */
     public function delete(int $id): Response
     {
+        if ($this->isGranted('ROLE_OBSERVER')) {
+            return new Response('', Response::HTTP_NOT_FOUND);
+        }
+
         /** @var User $user */
         $user = $this->getUser();
         $organization = $user->getOrganization();

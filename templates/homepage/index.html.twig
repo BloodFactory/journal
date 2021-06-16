@@ -117,19 +117,17 @@
                     <tr>
                         <th rowspan="2" style="padding: 7px; width: 80px;">Фактическая численность</th>
                         <th rowspan="2" style="padding: 7px; width: 50px;">На рабочем месте</th>
-                        <th rowspan="2" style="padding: 7px">В отпуске</th>
-                        <th colspan="4" style="padding: 7px">На дистанционной форме работы</th>
+                        <th rowspan="2" style="padding: 7px; width: 70px;">В отпуске</th>
+                        <th rowspan="2" style="padding: 7px; width: 70px;">На дистанционной форме работы</th>
                         <th rowspan="2" style="padding: 7px; width: 70px;">На 2х недельном карантине</th>
                         <th rowspan="2" style="padding: 7px; width: 75px;">На больничном листе</th>
-                        <th rowspan="2" style="padding: 7px; width: 70px">Заболевших (COVID-19)</th>
+                        <th colspan="2" style="padding: 7px;">Заболевших (COVID-19)</th>
                         <th rowspan="2" style="padding: 7px; width: 80px;">Выходной/<br>межвахтовый отдых</th>
                         <th rowspan="2" style="padding: 7px; width: 85px;">Скончалось от <span style="white-space: nowrap">COVID-19</span> (нарастающим итогом)</th>
                     </tr>
                     <tr>
-                        <th style="padding: 7px">Всего</th>
-                        <th style="padding: 7px; width: 60px;">Беременные женщины</th>
-                        <th style="padding: 7px; width: 85px;">Женщины с детьми до 14 лет</th>
-                        <th style="padding: 7px; width: 80px;">Работники старше 60 лет</th>
+                        <th style="width: 70px;">Вчера</th>
+                        <th style="width: 70px;">Сегодня</th>
                     </tr>
                     </thead>
 
@@ -154,9 +152,6 @@
                                 <td>{{ item.atWork }}</td>
                                 <td>{{ item.onHoliday }}</td>
                                 <td>{{ item.remoteTotal }}</td>
-                                <td>{{ item.remotePregnant }}</td>
-                                <td>{{ item.remoteWithChildren }}</td>
-                                <td>{{ item.remoteOver60 }}</td>
                                 <td>{{ item.onTwoWeekQuarantine }}</td>
                                 <td>{{ item.onSickLeave }}</td>
                                 <td>{{ item.sickCOVID }}</td>
@@ -200,9 +195,6 @@
                                     <td>{{ item.atWork }}</td>
                                     <td>{{ item.onHoliday }}</td>
                                     <td>{{ item.remoteTotal }}</td>
-                                    <td>{{ item.remotePregnant }}</td>
-                                    <td>{{ item.remoteWithChildren }}</td>
-                                    <td>{{ item.remoteOver60 }}</td>
                                     <td>{{ item.onTwoWeekQuarantine }}</td>
                                     <td>{{ item.onSickLeave }}</td>
                                     <td>{{ item.sickCOVID }}</td>

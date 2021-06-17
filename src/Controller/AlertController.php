@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AlertController extends AbstractController
 {
     /**
-     * @Route("", methods={"DELETE"})
+     * @Route("/delete", methods={"POST"})
      * @param Request $request
      * @return Response
      */

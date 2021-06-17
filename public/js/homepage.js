@@ -84,8 +84,8 @@ $(function () {
         var id = $(this).data('id');
 
         $.ajax({
-            url: '/alerts',
-            method: 'delete',
+            url: '/alerts/delete',
+            method: 'post',
             data: {
                 id: id
             }

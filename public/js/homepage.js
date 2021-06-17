@@ -79,4 +79,16 @@ $(function () {
 
         window.location = '/download?date=' + date;
     })
+
+    $('.once').on('hide', function () {
+        var id = $(this).data('id');
+
+        $.ajax({
+            url: '/alerts',
+            method: 'delete',
+            data: {
+                id: id
+            }
+        })
+    })
 })

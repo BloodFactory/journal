@@ -34,6 +34,7 @@
 {% endblock %}
 
 {% block body %}
+    {# {{ dump(alerts) }} #}
     <header uk-sticky="cls-active: activeSticky; animation: uk-animation-slide-top; top: 80;">
         <nav class="uk-navbar uk-navbar-transparent" uk-navbar>
             <div class="uk-container uk-container-large uk-flex" sizetype="big">
@@ -53,10 +54,20 @@
         </nav>
     </header>
 
-
     <div class="uk-section uk-section-muted uk-section-small"
          uk-height-viewport="offset-top: 80;">
-        <div class="uk-container uk-container-large" sizetype="big">
+        {% if alerts|length > 0 %}
+            <div class="uk-container uk-container-large" sizetype="big">
+                {% for alert in alerts %}
+                    <div class="uk-alert-primary {% if alert.once %}once{% endif %}" data-id="{{ alert.id }}" uk-alert>
+                        <a class="uk-alert-close" uk-close></a>
+                        {{ alert.message|raw }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="uk-container uk-container-large uk-margin-top" sizetype="big">
             <div class="uk-card uk-card-default uk-card-body uk-card-small"
                  uk-height-viewport="offset-top: true; offset-bottom: 40px">
                 <div class="uk-flex uk-flex-between">
@@ -144,9 +155,9 @@
                                 </td>
                                 {% if is_granted('ROLE_MORFLOT') %}
                                     <td>
-{#                                        {% if item.organization is not null %}#}
-                                            {{ item['organization'] }}
-{#                                        {% endif %}#}
+                                        {# {% if item.organization is not null %} #}
+                                        {{ item['organization'] }}
+                                        {# {% endif %} #}
                                     </td>
                                 {% endif %}
                                 <td>{{ item['total'] }}</td>

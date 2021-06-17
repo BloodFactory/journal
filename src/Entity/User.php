@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -40,6 +42,16 @@ class User implements UserInterface
      * @ORM\JoinColumn(nullable=false)
      */
     private ?Organization $organization;
+
+    /**
+     * @ORM\OneToMany(targetEntity=UserAlert::class, mappedBy="usr", orphanRemoval=true)
+     */
+    private $userAlerts;
+
+    public function __construct()
+    {
+        $this->userAlerts = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -120,6 +132,37 @@ class User implements UserInterface
     public function setOrganization(?Organization $organization): self
     {
         $this->organization = $organization;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserAlert[]
+     */
+    public function getUserAlerts(): Collection
+    {
+        return $this->userAlerts;
+    }
+
+    public function addUserAlert(UserAlert $userAlert): self
+    {
+        if (!$this->userAlerts->contains($userAlert)) {
+            $this->userAlerts[] = $userAlert;
+            $userAlert->setUsr($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserAlert(UserAlert $userAlert): self
+    {
+        if ($this->userAlerts->contains($userAlert)) {
+            $this->userAlerts->removeElement($userAlert);
+            // set the owning side to null (unless already changed)
+            if ($userAlert->getUsr() === $this) {
+                $userAlert->setUsr(null);
+            }
+        }
 
         return $this;
     }

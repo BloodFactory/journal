@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Alert;
 use App\Entity\Journal;
 use App\Entity\User;
 use DateTimeImmutable;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -45,7 +47,9 @@ class HomepageController extends AbstractController
                         ->getRepository(Journal::class)
                         ->createQueryBuilder('j')
                         ->addSelect('b')
+                        ->addSelect('o')
                         ->leftJoin('j.branches', 'b')
+                        ->leftJoin('j.organization', 'o')
                         ->andWhere('j.date = :date')
                         ->andWhere('j.headOffice IS NULL')
                         ->andWhere('j.isActive = 1')
@@ -57,7 +61,9 @@ class HomepageController extends AbstractController
                             ->getRepository(Journal::class)
                             ->createQueryBuilder('j')
                             ->addSelect('b')
+                            ->addSelect('o')
                             ->leftJoin('j.branches', 'b')
+                            ->leftJoin('j.organization', 'o')
                             ->andWhere('j.date = :date')
                             ->andWhere('j.headOffice IS NULL')
                             ->andWhere('j.isActive = 1')
@@ -122,7 +128,6 @@ class HomepageController extends AbstractController
         foreach ($journalPrev as $item) {
             if (!isset($result[$item->getOrganization()->getId()])) continue;
 
-
             $existingItem = $result[$item->getOrganization()->getId()];
             $existingItem['sickCOVIDPrev'] = $item->getSickCOVID();
 
@@ -133,18 +138,27 @@ class HomepageController extends AbstractController
             $result[$item->getOrganization()->getId()] = $existingItem;
         }
 
-//        dd($journal, $journalPrev, $result);
-
         $request->getSession()
                 ->set(self::SESSION_KEY, $query->all());
 
         $now = new DateTimeImmutable();
 
+        $rsm = new ResultSetMapping();
+        $rsm->addEntityResult(Alert::class, 'a');
+        $rsm->addFieldResult('a', 'id', 'id');
+        $rsm->addFieldResult('a', 'message', 'message');
+        $rsm->addFieldResult('a', 'once', 'once');
+        $query = $this->getDoctrine()->getManager()->createNativeQuery(file_get_contents(__DIR__ . '/queries/select_alerts.sql'), $rsm);
+        $query->setParameter(1, $user->getId());
+
+        $alerts = $query->getResult();
+
         return $this->render('homepage/index.html.twig', [
             'journal' => $result,
             'journalPrev' => $journalPrev,
             'date' => $date,
-            'now' => $now
+            'now' => $now,
+            'alerts' => $alerts
         ]);
     }
 }

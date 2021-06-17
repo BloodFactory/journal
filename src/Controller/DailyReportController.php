@@ -93,9 +93,9 @@ class DailyReportController extends AbstractController
             ->setAtWork((int)$data['journalForm_atWork'])
             ->setOnHoliday((int)$data['journalForm_onHoliday'])
             ->setRemoteTotal((int)$data['journalForm_remoteTotal'])
-            ->setRemotePregnant((int)$data['journalForm_remotePregnant'])
-            ->setRemoteWithChildren((int)$data['journalForm_remoteWithChildren'])
-            ->setRemoteOver60((int)$data['journalForm_remoteOver60'])
+            ->setRemotePregnant(0)
+            ->setRemoteWithChildren(0)
+            ->setRemoteOver60(0)
             ->setOnTwoWeekQuarantine((int)$data['journalForm_onTwoWeekQuarantine'])
             ->setOnSickLeave((int)$data['journalForm_onSickLeave'])
             ->setSickCOVID((int)$data['journalForm_sickCOVID'])
@@ -118,9 +118,9 @@ class DailyReportController extends AbstractController
                 ->setAtWork((int)$data['journalBranchesForm_atWork'])
                 ->setOnHoliday((int)$data['journalBranchesForm_onHoliday'])
                 ->setRemoteTotal((int)$data['journalBranchesForm_remoteTotal'])
-                ->setRemotePregnant((int)$data['journalBranchesForm_remotePregnant'])
-                ->setRemoteWithChildren((int)$data['journalBranchesForm_remoteWithChildren'])
-                ->setRemoteOver60((int)$data['journalBranchesForm_remoteOver60'])
+                ->setRemotePregnant(0)
+                ->setRemoteWithChildren(0)
+                ->setRemoteOver60(0)
                 ->setOnTwoWeekQuarantine((int)$data['journalBranchesForm_onTwoWeekQuarantine'])
                 ->setOnSickLeave((int)$data['journalBranchesForm_onSickLeave'])
                 ->setSickCOVID((int)$data['journalBranchesForm_sickCOVID'])
@@ -175,7 +175,7 @@ class DailyReportController extends AbstractController
 
 
         if ($data['journalForm_atWork'] == 0 && $data['journalForm_onHoliday'] == 0 && $data['journalForm_remoteTotal'] == 0
-            && $data['journalForm_remotePregnant'] == 0 && $data['journalForm_remoteWithChildren'] == 0 && $data['journalForm_remoteOver60'] == 0 && $data['journalForm_onTwoWeekQuarantine'] == 0
+            && $data['journalForm_onTwoWeekQuarantine'] == 0
             && $data['journalForm_onSickLeave'] == 0 && $data['journalForm_sickCOVID'] == 0 && $data['journalForm_ShiftRest'] == 0 && $data['journalForm_Die'] == 0) {
             throw new Exception('Все поля структуры "Количество работников" не могут быть нулями');
         }
@@ -187,7 +187,7 @@ class DailyReportController extends AbstractController
             }
 
             if ($data['journalBranchesForm_atWork'] == 0 && $data['journalBranchesForm_onHoliday'] == 0 && $data['journalBranchesForm_remoteTotal'] == 0
-                && $data['journalBranchesForm_remotePregnant'] == 0 && $data['journalBranchesForm_remoteWithChildren'] == 0 && $data['journalBranchesForm_remoteOver60'] == 0 && $data['journalBranchesForm_onTwoWeekQuarantine'] == 0
+                && $data['journalBranchesForm_onTwoWeekQuarantine'] == 0
                 && $data['journalBranchesForm_onSickLeave'] == 0 && $data['journalBranchesForm_sickCOVID'] == 0 && $data['journalBranchesForm_ShiftRest'] == 0 && $data['journalBranchesForm_Die'] == 0) {
                 throw new Exception('Все поля структуры "Количество работников" у филиалов не могут быть нулями');
             }

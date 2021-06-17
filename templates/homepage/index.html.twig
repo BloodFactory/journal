@@ -16,7 +16,7 @@
         }
 
         .branch {
-            background-color: honeydew;
+            background-color: honeydew !important;
         }
 
         div[sizetype="big"] {
@@ -108,7 +108,7 @@
                         {% if is_granted('ROLE_MORFLOT') %}
                             <th rowspan="3">Организация</th>
                         {% endif %}
-                        <th colspan="12" class="uk-text-center" style="padding: 7px">Количество работников</th>
+                        <th colspan="10" class="uk-text-center" style="padding: 7px">Количество работников</th>
                         <th rowspan="3" style="padding: 7px">Примечание</th>
                         {% if not is_granted('ROLE_OBSERVER') %}
                             <th rowspan="3" style="min-width: 60px; padding: 7px"></th>
@@ -134,42 +134,44 @@
                     <tbody>
                     {% if journal|length > 0 %}
                         {% set allowToModify = is_granted('ROLE_ALLOW_TO_MODIFY_ALL') %}
+
                         {% for item in journal %}
                             <tr>
                                 <td>
-                                    {% if item.organization.branches %}
-                                        <span uk-toggle="target: #branch_{{ item.id }}" uk-icon="triangle-down"></span>
+                                    {% if item['hasBranches'] %}
+                                        <span uk-toggle="target: #branch_{{ item['id'] }}" uk-icon="triangle-down"></span>
                                     {% endif %}
                                 </td>
                                 {% if is_granted('ROLE_MORFLOT') %}
                                     <td>
-                                        {% if item.organization is not null %}
-                                            {{ item.organization.name }}
-                                        {% endif %}
+{#                                        {% if item.organization is not null %}#}
+                                            {{ item['organization'] }}
+{#                                        {% endif %}#}
                                     </td>
                                 {% endif %}
-                                <td>{{ item.total }}</td>
-                                <td>{{ item.atWork }}</td>
-                                <td>{{ item.onHoliday }}</td>
-                                <td>{{ item.remoteTotal }}</td>
-                                <td>{{ item.onTwoWeekQuarantine }}</td>
-                                <td>{{ item.onSickLeave }}</td>
-                                <td>{{ item.sickCOVID }}</td>
-                                <td>{{ item.ShiftRest }}</td>
-                                <td>{{ item.Die }}</td>
-                                <td>{{ item.note }}</td>
+                                <td>{{ item['total'] }}</td>
+                                <td>{{ item['atWork'] }}</td>
+                                <td>{{ item['onHoliday'] }}</td>
+                                <td>{{ item['remoteTotal'] }}</td>
+                                <td>{{ item['onTwoWeekQuarantine'] }}</td>
+                                <td>{{ item['onSickLeave'] }}</td>
+                                <td>{{ item['sickCOVID'] }}</td>
+                                <td>{{ item['sickCOVID'] }}</td>
+                                <td>{{ item['shiftRest'] }}</td>
+                                <td>{{ item['die'] }}</td>
+                                <td>{{ item['note'] }}</td>
                                 {% if not is_granted('ROLE_OBSERVER') %}
                                     <td>
                                         <ul class="uk-iconnav">
-                                            {% if now < item.nextDay(allowToModify) %}
-                                                {% if app.user.organization.id == item.organization.id or allowToModify %}
-                                                    <li><a href="{{ path('daily_report', {id: item.id}) }}"
+                                            {% if now < item['nextDay'] %}
+                                                {% if app.user.organization.id == item['organization_id'] or allowToModify %}
+                                                    <li><a href="{{ path('daily_report', {id: item['id']}) }}"
                                                            class="uk-text-primary"
                                                            uk-icon="icon: file-edit"
                                                            uk-tooltip="Редактировать"></a></li>
                                                 {% endif %}
-                                                {% if app.user.organization.id == item.organization.id %}
-                                                    <li><a href="{{ path('delete_daily_report', {id: item.id}) }}"
+                                                {% if app.user.organization.id == item['organization_id'] %}
+                                                    <li><a href="{{ path('delete_daily_report', {id: item['id']}) }}"
                                                            class="delete_daily_report uk-text-danger"
                                                            uk-icon="icon: trash"
                                                            uk-tooltip="Удалить"></a></li>
@@ -180,27 +182,28 @@
                                 {% endif %}
                             </tr>
 
-                            {% if item.organization.branches %}
-                                {% set id = 'branch_' ~ item.id %}
+                            {% if item.hasBranches %}
+                                {% set id = 'branch_' ~ item['id'] %}
                                 {% set parent = item %}
-                                {% set item = item.branches[0] %}
+                                {% set item = item['branch'] %}
                                 <tr class="branch" id="{{ id }}" hidden>
                                     <td></td>
                                     {% if is_granted('ROLE_MORFLOT') %}
                                         <td>
-                                            Филиалы {{ parent.organization.name }}
+                                            Филиалы {{ parent['organization'] }}
                                         </td>
                                     {% endif %}
-                                    <td>{{ item.total }}</td>
-                                    <td>{{ item.atWork }}</td>
-                                    <td>{{ item.onHoliday }}</td>
-                                    <td>{{ item.remoteTotal }}</td>
-                                    <td>{{ item.onTwoWeekQuarantine }}</td>
-                                    <td>{{ item.onSickLeave }}</td>
-                                    <td>{{ item.sickCOVID }}</td>
-                                    <td>{{ item.ShiftRest }}</td>
-                                    <td>{{ item.Die }}</td>
-                                    <td>{{ item.note }}</td>
+                                    <td>{{ item['total'] }}</td>
+                                    <td>{{ item['atWork'] }}</td>
+                                    <td>{{ item['onHoliday'] }}</td>
+                                    <td>{{ item['remoteTotal'] }}</td>
+                                    <td>{{ item['onTwoWeekQuarantine'] }}</td>
+                                    <td>{{ item['onSickLeave'] }}</td>
+                                    <td>{{ item['sickCOVID'] }}</td>
+                                    <td>{{ item['shiftRest'] }}</td>
+                                    <td>{{ item['die'] }}</td>
+                                    <td>{{ item['note'] }}</td>
+                                    <td></td>
                                     <td></td>
                                 </tr>
                             {% endif %}

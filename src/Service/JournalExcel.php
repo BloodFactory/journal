@@ -126,7 +126,7 @@ class JournalExcel
         $sheet->getColumnDimension('M')->setWidth(44.06);
 
         $FIELDS = ["N пп", "Организация", "Количество работников", "", "", "", "", "", "", "", "", "", "Примечание"];
-        $FIELDS1 = ["", "", "фактическая численность", "на рабочем месте", "в отпуске", "на дистанционной форме работы", "на 2-х недельном карантине", "на больничном", "заболевших\r\n(COVID-19)", "", "Выходной/ межвахтовый отдых", "Скончалось от COVID-19 (нарастающим итогом)", ""];
+        $FIELDS1 = ["", "", "фактическая численность", "на рабочем месте", "в отпуске", "на дистанционной форме работы", "на 2-х недельном карантине", "на больничном", "болеющих\r\n(COVID-19)", "", "Выходной/ межвахтовый отдых", "Скончалось от COVID-19 (нарастающим итогом)", ""];
         $FIELDS2 = ["", "", "", "", "", "", "", "", "Вчера", "Сегодня", "", "", ""];
         $sheet->setCellValue('A1', "Ежедневный доклад оперативного дежурного Оперативного штаба Росморречфлота по предупреждению распространения коронавирусной инфекции(COVID-19)");
         $sheet->getStyle("A1:AA1")->applyFromArray(['font' => ['bold' => true]]); // выделяем жирным до АА+номер строки
@@ -416,9 +416,13 @@ class JournalExcel
                 $sheet->setCellValue($cellIndex, (string)call_user_func([$val['Jornal'], 'getSickCOVID']));
             }
 
-            if ('getSickCOVIDPrev' === $method) {
-                $total[$method][0] += call_user_func([$val['JornalPrev'], 'getSickCOVID']);
-                $sheet->setCellValue($cellIndex, (string)call_user_func([$val['JornalPrev'], 'getSickCOVID']));
+            if ('getSickCOVIDPrev' === $method) {                
+                if (isset($val['JornalPrev'])) {
+                    $total[$method][0] += call_user_func([$val['JornalPrev'], 'getSickCOVID']);
+                    $sheet->setCellValue($cellIndex, (string)call_user_func([$val['JornalPrev'], 'getSickCOVID']));
+                } else {
+                    $sheet->setCellValue($cellIndex,'-');
+                }
             }
         } else {
             $total[$method][0] += call_user_func([$val['Jornal'], $method]);

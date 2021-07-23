@@ -258,7 +258,12 @@
                                         <div class="uk-margin uk-flex">
                                             {% set name = formName ~ '_onSickLeave' %}
                                             <label for="{{ name }}"
-                                                   class="uk-form-label uk-margin-right">На больничном (по COVID-19)</label>
+                                                   class="uk-form-label uk-margin-right uk-position-relative">
+                                                На больничном
+                                                <span uk-icon="icon: question; ratio: 0.8"
+                                                      uk-tooltip="title: Общее количество человек на больничном, включая болеющих COVID-19; delay: 500"
+                                                      style="position: absolute; left: -25px; top: 3px; color: #1e87f0"></span>
+                                            </label>
                                             <input type="number"
                                                    min="0"
                                                    id="{{ name }}"
@@ -271,7 +276,12 @@
                                         <div class="uk-margin uk-flex">
                                             {% set name = formName ~ '_sickCOVID' %}
                                             <label for="{{ name }}"
-                                                   class="uk-form-label uk-margin-right">Болеющих (COVID-19)</label>
+                                                   class="uk-form-label uk-margin-right uk-position-relative">
+                                                Болеющих (COVID-19)
+                                                <span uk-icon="icon: question; ratio: 0.8"
+                                                      uk-tooltip="title: Входит в количество человек на больничном, не участвует при подсчёте фактической численности; delay: 500"
+                                                      style="position: absolute; left: -25px; top: 3px; color: #1e87f0"></span>
+                                            </label>
                                             <input type="number"
                                                    min="0"
                                                    id="{{ name }}"

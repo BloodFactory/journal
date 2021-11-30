@@ -1,253 +1,246 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomepageController!{% endblock %}
+{% block title %}Hello HomepageController!
+{% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    <style>
-        th, td {
-            border: 1px solid #e5e5e5;
-        }
+	{{ parent() }}
+	<style>
+		th,
+		td {
+			border: 1px solid #e5e5e5;
+		}
 
-        th {
-            font-size: 10px !important;
-            vertical-align: middle !important;
-            text-align: center !important;
-        }
+		th {
+			font-size: 10px !important;
+			vertical-align: middle !important;
+			text-align: center !important;
+		}
 
-        .branch {
-            background-color: honeydew !important;
-        }
+		.branch {
+			background-color: honeydew !important;
+		}
 
-        div[sizetype="big"] {
-            min-width: 90%;
-        }
+		div[sizetype="big"] {
+			min-width: 90%;
+		}
 
-        header {
-            background: linear-gradient(to left, #28a5f5, #1e87f0);
-        }
+		header {
+			background: linear-gradient(to left, #28a5f5, #1e87f0);
+		}
 
-        .activeSticky {
-            box-shadow: 0 5px 8px 2px rgba(0, 0, 0, 0.3);
-        }
-    </style>
+		.activeSticky {
+			box-shadow: 0 5px 8px 2px rgba(0, 0, 0, 0.3);
+		}
+	</style>
 {% endblock %}
 
 {% block body %}
-    {# {{ dump(alerts) }} #}
-    <header uk-sticky="cls-active: activeSticky; animation: uk-animation-slide-top; top: 80;">
-        <nav class="uk-navbar uk-navbar-transparent" uk-navbar>
-            <div class="uk-container uk-container-large uk-flex" sizetype="big">
-                <div class="uk-navbar-left">
-                    <span class="uk-navbar-item uk-logo" style="color: #fff">{{ app.user.organization.name }}</span>
-                </div>
+	{# {{ dump(alerts) }} #}
+	<header uk-sticky="cls-active: activeSticky; animation: uk-animation-slide-top; top: 80;">
+		<nav class="uk-navbar uk-navbar-transparent" uk-navbar>
+			<div class="uk-container uk-container-large uk-flex" sizetype="big">
+				<div class="uk-navbar-left">
+					<span class="uk-navbar-item uk-logo" style="color: #fff">{{ app.user.organization.name }}</span>
+				</div>
 
-                <div class="uk-navbar-right">
-                    <a href="{{ path('app_logout') }}"
-                       class="uk-button uk-button-danger">
-                        <span class="uk-margin-small-right" uk-icon="sign-out"></span>
-                        Выход
-                    </a>
-                </div>
-            </div>
+				<div class="uk-navbar-right">
+					<a href="{{ path('app_logout') }}" class="uk-button uk-button-danger">
+						<span class="uk-margin-small-right" uk-icon="sign-out"></span>
+						Выход
+					</a>
+				</div>
+			</div>
 
-        </nav>
-    </header>
+		</nav>
+	</header>
 
-    <div class="uk-section uk-section-muted uk-section-small"
-         uk-height-viewport="offset-top: 80;">
-        {% if alerts|length > 0 %}
-            <div class="uk-container uk-container-large" sizetype="big">
-                {% for alert in alerts %}
-                    <div class="uk-alert-primary {% if alert.once %}once{% endif %}" data-id="{{ alert.id }}" uk-alert>
-                        <a class="uk-alert-close" uk-close></a>
-                        {{ alert.message|raw }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+	<div class="uk-section uk-section-muted uk-section-small" uk-height-viewport="offset-top: 80;">
+		{% if alerts|length > 0 %}
+			<div class="uk-container uk-container-large" sizetype="big">
+				{% for alert in alerts %}
+					<div class="uk-alert-primary {% if alert.once %}once{% endif %}" data-id="{{ alert.id }}" uk-alert>
+						<a class="uk-alert-close" uk-close></a>
+						{{ alert.message|raw }}
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
 
-        <div class="uk-container uk-container-large uk-margin-top" sizetype="big">
-            <div class="uk-card uk-card-default uk-card-body uk-card-small"
-                 uk-height-viewport="offset-top: true; offset-bottom: 40px">
-                <div class="uk-flex uk-flex-between">
-                    <div>
-                        {% if not is_granted('ROLE_OBSERVER') %}
-                            <a href="{{ path('daily_report') }}"
-                               class="uk-button uk-button-primary">
-                                <span class="uk-margin-small-right" uk-icon="plus"></span>
-                                Добавить
-                            </a>
-                        {% endif %}
-                        {% if is_granted('ROLE_MORFLOT') %}
-                            <button class="uk-button uk-button-secondary" id="downloadJournal">
-                            <span class="uk-margin-small-right"
-                                  uk-icon="download"></span>
-                                Скачать (EXCEL)
-                            </button>
-                        {% endif %}
-                    </div>
+		<div class="uk-container uk-container-large uk-margin-top" sizetype="big">
+			<div class="uk-card uk-card-default uk-card-body uk-card-small" uk-height-viewport="offset-top: true; offset-bottom: 40px">
+				<div class="uk-flex uk-flex-between uk-flex-middle">
+					<div>
+						{% if not is_granted('ROLE_OBSERVER') %}
+							<a href="{{ path('daily_report') }}" class="uk-button uk-button-primary">
+								<span class="uk-margin-small-right" uk-icon="plus"></span>
+								Добавить
+							</a>
+						{% endif %}
+						{% if is_granted('ROLE_MORFLOT') %}
+							<button class="uk-button uk-button-secondary" id="downloadJournal">
+								<span class="uk-margin-small-right" uk-icon="download"></span>
+								Скачать (EXCEL)
+							</button>
+						{% endif %}
+					</div>
 
-                    <div class="uk-display-inline-block uk-margin-left">
-                        <form action=""
-                              class="uk-flex">
-                            <div class="uk-flex uk-flex-middle uk-margin-small-right">
-                                <label class="uk-form-label uk-margin-small-right"
-                                       for="form-stacked-text">Дата: </label>
-                                <div class="uk-form-controls">
-                                    <input class="uk-input datepicker"
-                                           id="date"
-                                           name="date"
-                                           type="text"
-                                           value="{{ date|date('d.m.Y') }}"
-                                           aria-label="Дата">
-                                </div>
-                            </div>
+					<small style="color: red">
+						В случае возникновения вопросов пишите на почту
+						<a href="mailto:covid@marinet.ru">covid@marinet.ru</a>
+					</small>
 
-                            <button class="uk-button uk-button-default">
-                                <span uk-icon="icon: search"></span>
-                                Искать
-                            </button>
-                        </form>
-                    </div>
-                </div>
+					<div class="uk-display-inline-block uk-margin-left">
+						<form action="" class="uk-flex">
+							<div class="uk-flex uk-flex-middle uk-margin-small-right">
+								<label class="uk-form-label uk-margin-small-right" for="form-stacked-text">Дата:
+								</label>
+								<div class="uk-form-controls">
+									<input class="uk-input datepicker" id="date" name="date" type="text" value="{{ date|date('d.m.Y') }}" aria-label="Дата">
+								</div>
+							</div>
 
-                <table class="uk-table uk-table-divider uk-table-striped">
-                    <thead>
-                    <tr>
-                        <th rowspan="3" style="width: 20px;"></th>
-                        {% if is_granted('ROLE_MORFLOT') %}
-                            <th rowspan="3">Организация</th>
-                        {% endif %}
-                        <th colspan="10" class="uk-text-center" style="padding: 7px">Количество работников</th>
-                        <th rowspan="3" style="padding: 7px">Примечание</th>
-                        {% if not is_granted('ROLE_OBSERVER') %}
-                            <th rowspan="3" style="min-width: 60px; padding: 7px"></th>
-                        {% endif %}
-                    </tr>
-                    <tr>
-                        <th rowspan="2" style="padding: 7px; width: 80px;">Фактическая численность</th>
-                        <th rowspan="2" style="padding: 7px; width: 50px;">На рабочем месте</th>
-                        <th rowspan="2" style="padding: 7px; width: 70px;">В отпуске</th>
-                        <th rowspan="2" style="padding: 7px; width: 70px;">На дистанционной форме работы</th>
-                        <th rowspan="2" style="padding: 7px; width: 70px;">На 2х недельном карантине</th>
-                        <th rowspan="2" style="padding: 7px; width: 75px;">
-                            На больничном<br/>
-                            <span uk-icon="icon: question; ratio: 0.8"
-                                  uk-tooltip="title: Общее количество человек на больничном, включая болеющих COVID-19; delay: 500"
-                                  style="color: #1e87f0"></span>
-                        </th>
-                        <th colspan="2" style="padding: 7px;">Болеющих (COVID-19)<br/>по состоянию на</th>
-                        <th rowspan="2" style="padding: 7px; width: 80px;">Выходной/<br>межвахтовый отдых</th>
-                        <th rowspan="2" style="padding: 7px; width: 85px;">Скончалось от <span style="white-space: nowrap">COVID-19</span> (нарастающим итогом)</th>
-                    </tr>
-                    <tr>
-                        <th style="width: 70px;">Вчера</th>
-                        <th style="width: 70px;">
-                            Сегодня
-                            <br/>
-                            <span uk-icon="icon: question; ratio: 0.8"
-                                  uk-tooltip="title: Входит в количество человек на больничном, не участвует при подсчёте фактической численности; delay: 500"
-                                  style="color: #1e87f0"></span>
-                        </th>
-                    </tr>
-                    </thead>
+							<button class="uk-button uk-button-default">
+								<span uk-icon="icon: search"></span>
+								Искать
+							</button>
+						</form>
+					</div>
+				</div>
 
-                    <tbody>
-                    {% if journal|length > 0 %}
-                        {% set allowToModify = is_granted('ROLE_ALLOW_TO_MODIFY_ALL') %}
+				<table class="uk-table uk-table-divider uk-table-striped">
+					<thead>
+						<tr>
+							<th rowspan="3" style="width: 20px;"></th>
+							{% if is_granted('ROLE_MORFLOT') %}
+								<th rowspan="3">Организация</th>
+							{% endif %}
+							<th colspan="10" class="uk-text-center" style="padding: 7px">Количество работников</th>
+							<th rowspan="3" style="padding: 7px">Примечание</th>
+							{% if not is_granted('ROLE_OBSERVER') %}
+								<th rowspan="3" style="min-width: 60px; padding: 7px"></th>
+							{% endif %}
+						</tr>
+						<tr>
+							<th rowspan="2" style="padding: 7px; width: 80px;">Фактическая численность</th>
+							<th rowspan="2" style="padding: 7px; width: 50px;">На рабочем месте</th>
+							<th rowspan="2" style="padding: 7px; width: 70px;">В отпуске</th>
+							<th rowspan="2" style="padding: 7px; width: 70px;">На дистанционной форме работы</th>
+							<th rowspan="2" style="padding: 7px; width: 70px;">На 2х недельном карантине</th>
+							<th rowspan="2" style="padding: 7px; width: 75px;">
+								На больничном<br/>
+								<span uk-icon="icon: question; ratio: 0.8" uk-tooltip="title: Общее количество человек на больничном, включая болеющих COVID-19; delay: 500" style="color: #1e87f0"></span>
+							</th>
+							<th colspan="2" style="padding: 7px;">Болеющих (COVID-19)<br/>по состоянию на</th>
+							<th rowspan="2" style="padding: 7px; width: 80px;">Выходной/<br>межвахтовый отдых</th>
+							<th rowspan="2" style="padding: 7px; width: 85px;">Скончалось от
+								<span style="white-space: nowrap">COVID-19</span>
+								(нарастающим итогом)</th>
+						</tr>
+						<tr>
+							<th style="width: 70px;">Вчера</th>
+							<th style="width: 70px;">
+								Сегодня
+								<br/>
+								<span uk-icon="icon: question; ratio: 0.8" uk-tooltip="title: Входит в количество человек на больничном, не участвует при подсчёте фактической численности; delay: 500" style="color: #1e87f0"></span>
+							</th>
+						</tr>
+					</thead>
 
-                        {% for item in journal %}
-                            <tr>
-                                <td>
-                                    {% if item['hasBranches'] %}
-                                        <span uk-toggle="target: #branch_{{ item['id'] }}" uk-icon="triangle-down"></span>
-                                    {% endif %}
-                                </td>
-                                {% if is_granted('ROLE_MORFLOT') %}
-                                    <td>
-                                        {# {% if item.organization is not null %} #}
-                                        {{ item['organization'] }}
-                                        {# {% endif %} #}
-                                    </td>
-                                {% endif %}
-                                <td>{{ item['total'] }}</td>
-                                <td>{{ item['atWork'] }}</td>
-                                <td>{{ item['onHoliday'] }}</td>
-                                <td>{{ item['remoteTotal'] }}</td>
-                                <td>{{ item['onTwoWeekQuarantine'] }}</td>
-                                <td>{{ item['onSickLeave'] }}</td>
-                                <td>{{ item['sickCOVIDPrev'] }}</td>
-                                <td>{{ item['sickCOVID'] }}</td>
-                                <td>{{ item['shiftRest'] }}</td>
-                                <td>{{ item['die'] }}</td>
-                                <td>{{ item['note'] }}</td>
-                                {% if not is_granted('ROLE_OBSERVER') %}
-                                    <td>
-                                        <ul class="uk-iconnav">
-                                            {% if now < item['nextDay'] %}
-                                                {% if app.user.organization.id == item['organization_id'] or allowToModify %}
-                                                    <li><a href="{{ path('daily_report', {id: item['id']}) }}"
-                                                           class="uk-text-primary"
-                                                           uk-icon="icon: file-edit"
-                                                           uk-tooltip="Редактировать"></a></li>
-                                                {% endif %}
-                                                {% if app.user.organization.id == item['organization_id'] %}
-                                                    <li><a href="{{ path('delete_daily_report', {id: item['id']}) }}"
-                                                           class="delete_daily_report uk-text-danger"
-                                                           uk-icon="icon: trash"
-                                                           uk-tooltip="Удалить"></a></li>
-                                                {% endif %}
-                                            {% endif %}
-                                        </ul>
-                                    </td>
-                                {% endif %}
-                            </tr>
+					<tbody>
+						{% if journal|length > 0 %}
+							{% set allowToModify = is_granted('ROLE_ALLOW_TO_MODIFY_ALL') %}
 
-                            {% if item.hasBranches %}
-                                {% set id = 'branch_' ~ item['id'] %}
-                                {% set parent = item %}
-                                {% set item = item['branch'] %}
-                                <tr class="branch" id="{{ id }}" hidden>
-                                    <td></td>
-                                    {% if is_granted('ROLE_MORFLOT') %}
-                                        <td>
-                                            Филиалы {{ parent['organization'] }}
-                                        </td>
-                                    {% endif %}
-                                    <td>{{ item['total'] }}</td>
-                                    <td>{{ item['atWork'] }}</td>
-                                    <td>{{ item['onHoliday'] }}</td>
-                                    <td>{{ item['remoteTotal'] }}</td>
-                                    <td>{{ item['onTwoWeekQuarantine'] }}</td>
-                                    <td>{{ item['onSickLeave'] }}</td>
-                                    <td>{{ item['sickCOVIDPrev'] }}</td>
-                                    <td>{{ item['sickCOVID'] }}</td>
-                                    <td>{{ item['shiftRest'] }}</td>
-                                    <td>{{ item['die'] }}</td>
-                                    <td>{{ item['note'] }}</td>
-                                    <td></td>
-                                </tr>
-                            {% endif %}
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            {% set colspan = 15 %}
-                            {% if is_granted('ROLE_MORFLOT') %}
-                                {% set colspan = colspan + 1 %}
-                            {% endif %}
-                            <td colspan="{{ colspan }}" class="uk-text-center">Нет ни одной записи</td>
-                        </tr>
-                    {% endif %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+							{% for item in journal %}
+								<tr>
+									<td>
+										{% if item['hasBranches'] %}
+											<span uk-toggle="target: #branch_{{ item['id'] }}" uk-icon="triangle-down"></span>
+										{% endif %}
+									</td>
+									{% if is_granted('ROLE_MORFLOT') %}
+										<td>
+											{# {% if item.organization is not null %} #}
+											{{ item['organization'] }}
+											{# {% endif %} #}
+										</td>
+									{% endif %}
+									<td>{{ item['total'] }}</td>
+									<td>{{ item['atWork'] }}</td>
+									<td>{{ item['onHoliday'] }}</td>
+									<td>{{ item['remoteTotal'] }}</td>
+									<td>{{ item['onTwoWeekQuarantine'] }}</td>
+									<td>{{ item['onSickLeave'] }}</td>
+									<td>{{ item['sickCOVIDPrev'] }}</td>
+									<td>{{ item['sickCOVID'] }}</td>
+									<td>{{ item['shiftRest'] }}</td>
+									<td>{{ item['die'] }}</td>
+									<td>{{ item['note'] }}</td>
+									{% if not is_granted('ROLE_OBSERVER') %}
+										<td>
+											<ul class="uk-iconnav">
+												{% if now < item['nextDay'] %}
+													{% if app.user.organization.id == item['organization_id'] or allowToModify %}
+														<li>
+															<a href="{{ path('daily_report', {id: item['id']}) }}" class="uk-text-primary" uk-icon="icon: file-edit" uk-tooltip="Редактировать"></a>
+														</li>
+													{% endif %}
+													{% if app.user.organization.id == item['organization_id'] %}
+														<li>
+															<a href="{{ path('delete_daily_report', {id: item['id']}) }}" class="delete_daily_report uk-text-danger" uk-icon="icon: trash" uk-tooltip="Удалить"></a>
+														</li>
+													{% endif %}
+												{% endif %}
+											</ul>
+										</td>
+									{% endif %}
+								</tr>
+
+								{% if item.hasBranches %}
+									{% set id = 'branch_' ~ item['id'] %}
+									{% set parent = item %}
+									{% set item = item['branch'] %}
+									<tr class="branch" id="{{ id }}" hidden>
+										<td></td>
+										{% if is_granted('ROLE_MORFLOT') %}
+											<td>
+												Филиалы
+												{{ parent['organization'] }}
+											</td>
+										{% endif %}
+										<td>{{ item['total'] }}</td>
+										<td>{{ item['atWork'] }}</td>
+										<td>{{ item['onHoliday'] }}</td>
+										<td>{{ item['remoteTotal'] }}</td>
+										<td>{{ item['onTwoWeekQuarantine'] }}</td>
+										<td>{{ item['onSickLeave'] }}</td>
+										<td>{{ item['sickCOVIDPrev'] }}</td>
+										<td>{{ item['sickCOVID'] }}</td>
+										<td>{{ item['shiftRest'] }}</td>
+										<td>{{ item['die'] }}</td>
+										<td>{{ item['note'] }}</td>
+										<td></td>
+									</tr>
+								{% endif %}
+							{% endfor %}
+						{% else %}
+							<tr>
+								{% set colspan = 15 %}
+								{% if is_granted('ROLE_MORFLOT') %}
+									{% set colspan = colspan + 1 %}
+								{% endif %}
+								<td colspan="{{ colspan }}" class="uk-text-center">Нет ни одной записи</td>
+							</tr>
+						{% endif %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
+	{{ parent() }}
 
-    <script src="{{ asset('js/homepage.js', 'custom') }}"></script>
+	<script src="{{ asset('js/homepage.js', 'custom') }}"></script>
 {% endblock %}

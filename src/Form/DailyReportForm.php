@@ -46,7 +46,7 @@ class DailyReportForm extends AbstractType
                 'label' => 'Работники старше 60 лет на дистанционной форме работы'
             ])
             ->add('onTwoWeekQuarantine', NumberType::class, [
-                'label' => 'На 2х недельном карантине'
+                'label' => 'На карантине'
             ])
             ->add('onSickLeave', NumberType::class, [
                 'label' => 'На больничном'
